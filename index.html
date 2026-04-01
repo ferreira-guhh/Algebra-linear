@@ -226,6 +226,117 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
 /* big formula */
 .big-formula{text-align:center;padding:20px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;font-family:'IBM Plex Mono',monospace;font-size:1.1rem;color:var(--math);margin:14px 0;letter-spacing:.5px;}
+
+/* ── INTUITION BOXES ── */
+.intuition-btn {
+  margin-top:8px;
+  margin-left:8px;
+  background:rgba(251,146,60,.08);
+  border:1px solid rgba(251,146,60,.25);
+  border-radius:8px;
+  color:var(--a4);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:1px;
+  padding:7px 16px;
+  cursor:pointer;
+  transition:all .2s;
+  text-transform:uppercase;
+}
+.intuition-btn:hover{background:rgba(251,146,60,.16);}
+.intuition-box{display:none;margin-top:14px;}
+.intuition-box.show{display:block;}
+.intuition-inner{
+  background:linear-gradient(135deg,rgba(251,146,60,.05),rgba(167,139,250,.03));
+  border:1px solid rgba(251,146,60,.2);
+  border-radius:12px;
+  padding:20px 22px;
+}
+.intuition-tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--a4);
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.intuition-tag::after{content:'';flex:1;height:1px;background:rgba(251,146,60,.2);}
+.intuition-scenario{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 16px;
+  margin:10px 0;
+  font-size:.86rem;
+  color:var(--muted);
+  line-height:1.75;
+}
+.intuition-scenario strong{color:var(--text);}
+.intuition-scenario .sc-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--a4);
+  margin-bottom:6px;
+  display:block;
+}
+.intuition-scenario .sc-label.green{color:var(--a3);}
+.intuition-scenario .sc-label.red{color:var(--a2);}
+.intuition-scenario .sc-label.blue{color:var(--a1);}
+.intuition-scenario .sc-label.violet{color:var(--a5);}
+.intuition-summary{
+  background:rgba(251,146,60,.07);
+  border-left:3px solid var(--a4);
+  border-radius:0 8px 8px 0;
+  padding:12px 16px;
+  margin-top:14px;
+  font-size:.85rem;
+  color:var(--muted);
+  line-height:1.7;
+}
+.intuition-summary strong{color:var(--a4);}
+.intuition-math{
+  background:var(--code-bg,#0d1117);
+  border:1px solid var(--border);
+  border-left:3px solid var(--math);
+  border-radius:0 10px 10px 0;
+  padding:12px 16px;
+  margin:10px 0;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.82rem;
+  color:var(--math);
+  line-height:1.9;
+  overflow-x:auto;
+}
+.intuition-step{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  margin-bottom:12px;
+}
+.intuition-step-n{
+  background:var(--a4);
+  color:#060810;
+  border-radius:6px;
+  width:24px;
+  height:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  font-weight:700;
+  flex-shrink:0;
+  margin-top:2px;
+}
+.intuition-step-body{font-size:.87rem;color:var(--muted);line-height:1.7;}
+.intuition-step-body strong{color:var(--text);}
+/* code snippet inline */
+.icode{font-family:'IBM Plex Mono',monospace;background:rgba(96,165,250,.1);color:var(--a1);padding:1px 6px;border-radius:4px;font-size:.85em;}
 </style>
 </head>
 <body>
@@ -254,7 +365,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <button class="nav-btn" onclick="switchTab(5)">🏗️ Base & Dim.</button>
     <button class="nav-btn" onclick="switchTab(6)">🔄 Trans. Linear</button>
     <button class="nav-btn" onclick="switchTab(7)">⚡ Autovalores</button>
-    <button class="nav-btn" onclick="switchTab(8)">📝 Exercícios</button>
+    <button class="nav-btn" onclick="switchTab(8)" style="color:#f59e0b;border-bottom-color:transparent;" id="navcomp">🔀 Composição TL</button>
+    <button class="nav-btn" onclick="switchTab(9)">📝 Exercícios</button>
   </div>
 </div>
 
@@ -353,6 +465,74 @@ Onde θ é o ângulo entre u e v.
 Propriedade: v + 0 = v   para qualquer v
     </div>
     <div class="warn"><strong>⚠️ Atenção:</strong> O vetor zero <strong>não tem direção definida</strong>. Isso é importante para a definição de independência linear!</div>
+  </div>
+
+  <hr class="dv">
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a2)">🎯 Os 3 Componentes de um Vetor</div>
+    <p>Todo vetor é completamente definido por <strong>três características</strong>:</p>
+    <div class="axiom-grid" style="margin-top:14px">
+      <div class="axiom">
+        <div class="axiom-num">Componente 1</div>
+        <div class="axiom-name">Módulo (Intensidade)</div>
+        <div style="font-size:.85rem;color:var(--muted);margin-top:4px">Um número que representa o tamanho/comprimento do vetor. Calculado pela norma ‖v‖.</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Componente 2</div>
+        <div class="axiom-name">Direção</div>
+        <div style="font-size:.85rem;color:var(--muted);margin-top:4px">A reta sobre a qual o vetor está. Pode ser horizontal, vertical ou inclinada (indicada pelo ângulo).</div>
+      </div>
+      <div class="axiom" style="grid-column:span 2">
+        <div class="axiom-num">Componente 3</div>
+        <div class="axiom-name">Sentido</div>
+        <div style="font-size:.85rem;color:var(--muted);margin-top:4px">Para onde a seta aponta dentro da direção. Ex: esquerda ou direita, para cima ou para baixo. Convenção: <strong>a favor do movimento = positivo (+), contra o movimento = negativo (−)</strong>.</div>
+      </div>
+    </div>
+    <div class="warn" style="margin-top:12px"><strong>⚠️ Dois vetores são iguais</strong> somente se têm o mesmo módulo, mesma direção E mesmo sentido.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">📐 Regra do Paralelogramo e Regra do Polígono</div>
+    <p>São os dois métodos geométricos para calcular a <strong>resultante R⃗</strong> (soma) de dois vetores.</p>
+    <div class="g2" style="margin-top:14px">
+      <div>
+        <div class="hl-tag orange">Regra do Paralelogramo</div>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">Une as origens dos dois vetores e completa o paralelogramo. A diagonal é a resultante.</p>
+        <div class="math-block">
+Fórmula geral:
+|R⃗| = √(a² + b² + 2·a·b·cos θ)
+
+Onde θ é o ângulo entre os vetores a⃗ e b⃗.
+        </div>
+      </div>
+      <div>
+        <div class="hl-tag blue">Regra do Polígono</div>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">Une os vetores cabeça-a-cauda. A resultante vai da origem do primeiro até a ponta do último.</p>
+        <div class="math-block">
+Notação:
+R⃗ = a⃗ + b⃗
+
+A resultante fecha o polígono
+formado pelos vetores.
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight" style="margin-top:16px">
+      <div class="hl-tag orange">⭐ Caso Particular — Vetores Perpendiculares (θ = 90°)</div>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:10px">Quando os vetores são perpendiculares, cos(90°) = 0, o termo 2·a·b·cos θ some e a fórmula simplifica:</p>
+      <div class="big-formula">|R⃗| = √(a² + b²)</div>
+      <div class="math-block">
+Exemplo: a⃗ = 3 (horizontal) e b⃗ = 4 (vertical), θ = 90°
+
+|R⃗| = √(3² + 4²) = √(9 + 16) = √25 = 5
+
+(O famoso triângulo 3-4-5!)
+      </div>
+    </div>
+
+    <div class="tip"><strong>💡 Obs. importante (do caderno):</strong> A resultante é a soma vetorial. Pela regra do polígono: coloca-se a⃗ e b⃗ cabeça-a-cauda, e R⃗ = a⃗ + b⃗ vai da origem de a⃗ até a ponta de b⃗.</div>
   </div>
 
   <hr class="dv">
@@ -983,6 +1163,190 @@ T(3, 1) = | 2  1 | | 3 | = | 7 |
            | 1 -1 | | 1 |   | 2 |
     </div>
   </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">🔁 Operador Linear</div>
+    <p>Quando o domínio e o contradomínio de uma transformação linear são o <strong>mesmo espaço vetorial</strong> (U = V), a TL é chamada de <strong>operador linear</strong>.</p>
+    <div class="math-block">
+TL genérica:  F: U → V   (espaços diferentes)
+Operador linear: F: U → U  (mesmo espaço)
+
+Exemplo de operador linear em ℝ²:
+F(x, y) = (x + y, x - y)   ← F: ℝ² → ℝ²
+    </div>
+    <div class="tip"><strong>💡 Por que é especial?</strong> Operadores lineares permitem compor F∘F, calcular potências F², F³, e estudar comportamento iterativo — o que leva naturalmente aos autovalores!</div>
+    <div class="highlight" style="margin-top:12px">
+      <div class="hl-tag green">Notation L(U)</div>
+      <p style="font-size:.88rem;color:var(--muted)">O conjunto de todos os operadores lineares de U em U é denotado <strong>L(U)</strong>. Composição de operadores em L(U) produz outro elemento de L(U) — isso é o que permite definir operações entre transformações.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">🔬 Exemplo Completo — Verificação de TL (do caderno)</div>
+    <p style="margin-bottom:12px">Verificar se F: ℝ³ → ℝ² definida por <strong>F(x, y, z) = (x, 2x − z)</strong> é linear.</p>
+    <div class="steps">
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Condição i — F(u₁ + u₂) = F(u₁) + F(u₂):</strong>
+      <div class="math-block">
+u₁=(x₁,y₁,z₁), u₂=(x₂,y₂,z₂)
+F(u₁+u₂) = F(x₁+x₂, y₁+y₂, z₁+z₂)
+          = (x₁+x₂, 2(x₁+x₂)−(z₁+z₂))
+          = (x₁+x₂, 2x₁+2x₂−z₁−z₂)
+          = (x₁, 2x₁−z₁) + (x₂, 2x₂−z₂)
+          = F(u₁) + F(u₂)  ✅
+      </div></div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Condição ii — F(αu) = αF(u):</strong>
+      <div class="math-block">
+F(αu) = F(αx, αy, αz)
+       = (αx, 2αx − αz)
+       = α(x, 2x − z)
+       = αF(u)  ✅
+      </div></div></div>
+    </div>
+    <div class="tip"><strong>✅ Conclusão:</strong> F é uma transformação linear.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ COMPOSIÇÃO TL ═══════════════════════ -->
+<div class="panel" id="p8">
+  <div class="sec-label"><div class="sec-num orange">09</div><h2>Composição de Transformações Lineares</h2></div>
+
+  <div class="card" style="border-color:rgba(251,146,60,.3)">
+    <div class="card-title" style="color:var(--a4)">⭐ Conteúdo de Prova — Atenção Máxima!</div>
+    <p>Este tópico foi marcado explicitamente pelo professor como <strong>conteúdo de prova</strong>. Domine a definição, o diagrama e as 3 propriedades.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔀 Definição — Composição G∘F</div>
+    <p>Sejam U, V e W espaços vetoriais sobre ℝ. Se <strong>F: U → V</strong> e <strong>G: V → W</strong> são transformações lineares, define-se a <strong>aplicação composta</strong> G∘F (lê-se "G composto com F") como:</p>
+    <div class="big-formula">(G∘F): U → W &nbsp;&nbsp;&nbsp; (G∘F)(u) = G(F(u)), ∀u ∈ U</div>
+    <div class="warn"><strong>⚠️ Ordem importa!</strong> G∘F significa: aplica-se F primeiro, depois G. A leitura é da direita para a esquerda: G APÓS F.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a1)">🗺️ Diagrama da Composição</div>
+    <p style="margin-bottom:14px">O diagrama abaixo (igual ao do caderno) mostra o fluxo da composição:</p>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--muted);overflow-x:auto">
+      <div style="display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;gap:8px;min-width:400px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:10px 20px;color:var(--a1);font-weight:700">U</div>
+        <div style="color:var(--a3);font-size:1.2rem;padding:0 4px">──F──▶</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:10px 20px;color:var(--a2);font-weight:700">V<br><span style="font-size:.75rem;color:var(--muted)">F(u)</span></div>
+        <div style="color:var(--a3);font-size:1.2rem;padding:0 4px">──G──▶</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:10px 20px;color:var(--a5);font-weight:700">W<br><span style="font-size:.75rem;color:var(--muted)">G(F(u))</span></div>
+      </div>
+      <div style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:4px">
+        <div style="color:var(--a1);font-weight:700">U</div>
+        <div style="color:var(--a4);font-size:1.1rem">───── G∘F ─────▶</div>
+        <div style="color:var(--a5);font-weight:700">W</div>
+      </div>
+      <div style="margin-top:10px;color:var(--muted);font-size:.78rem">(G∘F)(u) = G(F(u))</div>
+    </div>
+    <div class="tip" style="margin-top:14px"><strong>💡 A composição G∘F também é uma TL!</strong> A composição de duas transformações lineares é sempre linear. Por isso G∘F ∈ L(U, W).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">✅ As 3 Propriedades da Composição em L(U)</div>
+    <p style="margin-bottom:16px">Quando G, F, H ∈ L(U) (operadores lineares no mesmo espaço), a composição G∘F passa a ser uma operação em L(U) com as seguintes propriedades:</p>
+
+    <div class="axiom-grid">
+      <div class="axiom" style="grid-column:span 2;border-color:rgba(167,139,250,.25)">
+        <div class="axiom-num" style="color:var(--a5)">Propriedade i</div>
+        <div class="axiom-name">Associatividade</div>
+        <div class="axiom-formula">(H∘G)∘F = H∘(G∘F) &nbsp; ∀H, G, F ∈ L(U)</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:8px">Não importa qual composição você faz primeiro — o resultado é o mesmo.</div>
+      </div>
+      <div class="axiom" style="border-color:rgba(52,211,153,.25)">
+        <div class="axiom-num" style="color:var(--a3)">Propriedade ii</div>
+        <div class="axiom-name">Operador Identidade</div>
+        <div class="axiom-formula">I∘F = F∘I = F &nbsp; ∀F ∈ L(U)</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:8px">O operador identidade I(u)=u é o elemento neutro da composição.</div>
+      </div>
+      <div class="axiom" style="border-color:rgba(96,165,250,.25)">
+        <div class="axiom-num" style="color:var(--a1)">Propriedade iii</div>
+        <div class="axiom-name">Distributividade em relação à adição</div>
+        <div class="axiom-formula">H∘(F+G) = H∘F + H∘G<br>(F+G)∘H = F∘H + G∘H</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:8px">A composição distribui sobre a adição de transformações.</div>
+      </div>
+    </div>
+
+    <div class="warn" style="margin-top:14px"><strong>⚠️ CUIDADO — Composição NÃO é comutativa em geral!</strong> G∘F ≠ F∘G. A ordem dos fatores altera o produto!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">🔬 Exemplo Completo — Calcular G∘F</div>
+    <p style="margin-bottom:12px">Sejam F: ℝ² → ℝ² e G: ℝ² → ℝ² definidas por:<br>
+    <strong>F(x, y) = (x + y, x − y)</strong> &nbsp;&nbsp; e &nbsp;&nbsp; <strong>G(x, y) = (2x, y + 1)</strong></p>
+
+    <div class="warn"><strong>⚠️ Espera!</strong> G(x,y) = (2x, y+1) NÃO é TL (por causa do +1). Vamos usar um exemplo correto:</div>
+
+    <p style="margin-top:14px;margin-bottom:10px">Sejam <strong>F(x,y) = (x+y, x−y)</strong> e <strong>G(x,y) = (2x, 3y)</strong>. Calcule G∘F.</p>
+    <div class="steps">
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Aplique F primeiro:</strong>
+      <div class="math-block">F(x, y) = (x+y, x−y)</div></div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Aplique G no resultado de F:</strong>
+      <div class="math-block">
+G(F(x,y)) = G(x+y, x−y)
+           = (2(x+y), 3(x−y))
+           = (2x+2y, 3x−3y)
+
+∴ (G∘F)(x,y) = (2x+2y, 3x−3y)
+      </div></div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Calcule F∘G para comparar:</strong>
+      <div class="math-block">
+F(G(x,y)) = F(2x, 3y)
+           = (2x+3y, 2x−3y)
+
+∴ (F∘G)(x,y) = (2x+3y, 2x−3y)
+
+G∘F ≠ F∘G  → composição NÃO é comutativa!
+      </div></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">🔢 Composição via Matrizes — Exemplo do Caderno</div>
+    <p style="margin-bottom:12px">Do caderno: matriz A 2×2, A = (2 3 / 4 1). T: V×V definida por v → Av, isto é, T(v) = Av.</p>
+    <div class="math-block">
+Dado v = (2/5) ← vetor coluna:
+
+T(v) = A·v = | 2  3 | · | 2 |
+              | 4  1 |   | 5 |
+
+     = | 2×2 + 3×5 | = | 4 + 15 | = |  19 |
+       | 4×2 + 1×5 |   | 8 +  5 |   |  13 |
+
+∴ T(v) = (19, 13)
+    </div>
+    <div class="tip"><strong>💡 Composição via matrizes:</strong> Se F ↔ A e G ↔ B (matrizes), então G∘F ↔ B·A (produto de matrizes). A ordem é a mesma — B multiplica A pela esquerda.</div>
+    <div class="math-block">
+G∘F  ↔  B · A   (produto matricial)
+F∘G  ↔  A · B   (produto diferente!)
+
+Isso explica por que B·A ≠ A·B em geral.
+    </div>
+  </div>
+
+  <hr class="dv">
+
+  <div class="highlight" style="background:linear-gradient(135deg,rgba(251,146,60,.07),rgba(167,139,250,.04));border-color:rgba(251,146,60,.25)">
+    <div class="hl-tag orange">🎯 Resumo para a Prova</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Conceito</th><th>Fórmula/Definição</th><th>Observação</th></tr>
+        <tr><td><strong>Composição</strong></td><td>(G∘F)(u) = G(F(u))</td><td>F age primeiro, depois G</td></tr>
+        <tr><td><strong>Domínio</strong></td><td>G∘F: U → W</td><td>F: U→V e G: V→W</td></tr>
+        <tr><td><strong>Associatividade</strong></td><td>(H∘G)∘F = H∘(G∘F)</td><td>Sempre vale</td></tr>
+        <tr><td><strong>Identidade</strong></td><td>I∘F = F∘I = F</td><td>I(u)=u é neutro</td></tr>
+        <tr><td><strong>Distributiva</strong></td><td>H∘(F+G) = H∘F + H∘G</td><td>Distribui sobre adição</td></tr>
+        <tr><td><strong>Comutatividade</strong></td><td>G∘F ≠ F∘G em geral</td><td>⚠️ NÃO comuta!</td></tr>
+        <tr><td><strong>Via matrizes</strong></td><td>G∘F ↔ B·A</td><td>G↔B, F↔A</td></tr>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════════ AUTOVALORES ═══════════════════════ -->
@@ -1081,8 +1445,7 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
   </div>
 </div>
 
-<!-- ═══════════════════════ EXERCÍCIOS ═══════════════════════ -->
-<div class="panel" id="p8">
+<div class="panel" id="p9">
 
   <!-- PLACAR -->
   <div class="score-bar">
@@ -1091,7 +1454,7 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
     <div class="sc"><div class="sc-val blue" id="sc-pc">0%</div><div class="sc-lbl">Aproveit.</div></div>
   </div>
   <div class="progress-bg"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:1px;" id="prog-txt">0 de 20 questões respondidas</p>
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:1px;" id="prog-txt">0 de 22 questões respondidas</p>
 
   <!-- ── TEORIA ── -->
   <div class="ex-section-label" style="color:var(--a2)">🔴 Questões Teóricas</div>
@@ -1105,6 +1468,55 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
     <div class="reveal-box" id="rv-t01"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
     Um conjunto {v₁,...,vₖ} é LI se a única maneira de obter o vetor zero como combinação linear é com todos os coeficientes iguais a zero: α₁v₁+...+αₖvₖ=0 ⟹ α₁=...=αₖ=0. Isso significa que nenhum vetor do conjunto pode ser obtido como combinação linear dos demais — cada um "aponta para uma direção nova".<br><br>
     <strong>Exemplo:</strong> {(1,0), (0,1)} é LI em ℝ². Se α₁(1,0)+α₂(0,1)=(0,0), então α₁=0 e α₂=0. Nenhum é múltiplo do outro.</div></div>
+    <button class="intuition-btn" onclick="revealToggle(this,'intuition-t01')">🎮 Ver explicação intuitiva</button>
+    <div class="intuition-box" id="intuition-t01">
+      <div class="intuition-inner">
+        <div class="intuition-tag">🎮 Traduzindo para o mundo dos games</div>
+
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:14px">Imagine que você está programando a movimentação de um personagem num mapa 2D (ℝ²). Você precisa dar a ele <strong style="color:var(--text)">"comandos" (vetores)</strong> para se mover.</p>
+
+        <div class="intuition-scenario">
+          <span class="sc-label green">✅ Cenário 1 — Linearmente Independente (LI)</span>
+          <strong>v₁</strong> = move o personagem para a <strong>Frente/Trás</strong><br>
+          <strong>v₂</strong> = move o personagem para a <strong>Esquerda/Direita</strong><br><br>
+          Esses dois vetores são <strong>Independentes</strong>. Por quê? Não importa o quanto você ande para Frente/Trás — você <em>nunca</em> vai conseguir se mover para Esquerda/Direita usando só esse comando. O v₂ te dá uma <strong>capacidade totalmente nova, uma "direção nova"</strong>. Nenhum substitui o outro.
+        </div>
+
+        <div class="intuition-scenario">
+          <span class="sc-label red">❌ Cenário 2 — Linearmente Dependente (LD)</span>
+          <strong>v₁</strong> = andar 1 metro para a Frente<br>
+          <strong>v₃</strong> = andar 2 metros para a Frente<br><br>
+          Esses vetores são <strong>Dependentes</strong>. O v₃ não traz nenhuma novidade — é só o v₁ multiplicado por 2. Você consegue criar o movimento do v₃ apenas "combinando" o v₁. <strong>É um botão inútil no controle.</strong>
+        </div>
+
+        <div class="intuition-summary"><strong>Resumo:</strong> Um conjunto de vetores é LI quando não tem nenhum vetor "inútil" ou "repetido disfarçado". Nenhum deles pode ser fabricado juntando os outros.</div>
+
+        <div class="intuition-tag" style="margin-top:20px">🔢 A Visão Matemática — A Fórmula do Zero</div>
+        <p style="font-size:.87rem;color:var(--muted);margin-bottom:10px">A matemática prova isso <em>tentando voltar para a origem (0,0)</em>. A pergunta é: <strong style="color:var(--text)">"Quais multiplicadores preciso para chegar exatamente no zero?"</strong></p>
+
+        <div class="intuition-math">α₁v₁ + α₂v₂ + ... + αₖvₖ = 0⃗</div>
+
+        <div class="intuition-scenario">
+          <span class="sc-label green">Se for LI:</span>
+          Como cada vetor aponta para caminhos completamente diferentes (um só vai pro Norte, outro só pro Leste), a <strong>única forma de ficar no zero é não dar passo nenhum</strong>. Ou seja: α₁ = 0 e α₂ = 0. Solução só trivial.
+        </div>
+
+        <div class="intuition-scenario">
+          <span class="sc-label red">Se for LD:</span>
+          Com v₁=(1m pra frente) e v₃=(2m pra frente), você consegue voltar ao zero dando <strong>2 passos pra frente com v₁</strong> e <strong>1 passo pra trás com v₃</strong>. Os alfas foram 2 e −1 — <strong>não foram zero!</strong>
+        </div>
+
+        <div class="intuition-tag" style="margin-top:20px">🔬 Dissecando o exemplo: v₁=(1,0) e v₂=(0,1)</div>
+        <p style="font-size:.87rem;color:var(--muted);margin-bottom:10px">São os eixos X e Y puros. Aplicando a fórmula do zero:</p>
+        <div class="intuition-math">
+α₁(1,0) + α₂(0,1) = (0,0)
+→ (α₁, 0) + (0, α₂) = (0,0)
+→ (α₁, α₂) = (0,0)
+→ obrigatoriamente: α₁ = 0 e α₂ = 0 ✅
+        </div>
+        <div class="intuition-summary"><strong>Conclusão:</strong> A única solução possível foi tudo zero — isso prova matematicamente que (1,0) e (0,1) são LI. Um não tem absolutamente nada a ver com o outro, e juntos eles conseguem mapear qualquer ponto da tela.</div>
+      </div>
+    </div>
   </div>
 
   <div class="ex-card">
@@ -1116,6 +1528,52 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
     <div class="reveal-box" id="rv-t02"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
     Os 3 critérios são: (1) 0⃗ ∈ W; (2) u,v ∈ W ⟹ u+v ∈ W; (3) v ∈ W, λ ∈ ℝ ⟹ λv ∈ W.<br><br>
     Não precisamos verificar todos os 8 axiomas porque W já é subconjunto de V (espaço vetorial), então as propriedades como comutatividade, associatividade e distributividade são herdadas automaticamente de V. Os 3 critérios garantem que as operações não "saem" de W e que W tem o vetor zero, o que é suficiente.</div></div>
+    <button class="intuition-btn" onclick="revealToggle(this,'intuition-t02')">☕ Ver explicação intuitiva (com Java/POO!)</button>
+    <div class="intuition-box" id="intuition-t02">
+      <div class="intuition-inner">
+        <div class="intuition-tag">☕ Traduzindo para Java e POO</div>
+
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:16px">Essa é uma das questões mais conceituais de Álgebra Linear — mas se a gente traduzir para a Programação Orientada a Objetos que você acabou de estudar em Java, tudo faz sentido instantaneamente.</p>
+
+        <div class="intuition-scenario">
+          <span class="sc-label violet">🔷 A Analogia com Herança</span>
+          Um <strong>Espaço Vetorial (V)</strong> é como a <span class="icode">classe pai</span> suprema. Para ser considerado um Espaço Vetorial, o conjunto precisa obedecer a 8 regras (axiomas) bem chatas — comutatividade, associatividade, elemento neutro etc.<br><br>
+          Um <strong>Subespaço Vetorial (W)</strong> é simplesmente um pedaço menor que vive dentro de V. É a <span class="icode">classe filha</span>.<br><br>
+          Lembra que quando você escreveu <span class="icode">Aluna extends Pessoa</span>, a classe <span class="icode">Aluna</span> herdou automaticamente <span class="icode">getNome()</span> e <span class="icode">getIdade()</span> sem precisar reescrever tudo? <strong>Na Álgebra Linear acontece exatamente isso!</strong> Como W é um pedaço de V, ele herda automaticamente todas as propriedades matemáticas. Testar os 8 axiomas de novo seria código duplicado — perda de tempo total.
+        </div>
+
+        <div class="intuition-summary" style="border-color:var(--a5);background:rgba(167,139,250,.06)"><strong style="color:var(--a5)">💡 Por isso só precisamos de 3 critérios,</strong> não 8. Os outros 5 já vêm de brinde com a herança de V.</div>
+
+        <div class="intuition-tag" style="margin-top:20px">🔐 Os 3 Critérios — O "Security Check"</div>
+        <p style="font-size:.87rem;color:var(--muted);margin-bottom:12px">Precisamos garantir que W é uma <strong>"caixa fechada"</strong> — que as operações não "vazam" para fora.</p>
+
+        <div class="intuition-step">
+          <div class="intuition-step-n">1</div>
+          <div class="intuition-step-body">
+            <strong>⚓ A Âncora: 0⃗ ∈ W</strong><br>
+            O vetor zero tem que existir dentro de W. Todo subespaço tem que passar pela origem. Se você está criando uma reta no gráfico, ela <em>obrigatoriamente</em> tem que cruzar o ponto (0,0). Se não passar, não é subespaço — <strong>é como um jogo sem ponto de respawn inicial</strong>.
+          </div>
+        </div>
+        <div class="intuition-step">
+          <div class="intuition-step-n">2</div>
+          <div class="intuition-step-body">
+            <strong>➕ Fechamento da Soma: u,v ∈ W ⟹ u+v ∈ W</strong><br>
+            Se você pegar dois vetores de W e somar, o resultado tem que continuar dentro de W. <br>
+            <em>Exemplo:</em> Se W é o eixo X (horizontal) e você der 2 passos pra direita (u) + 3 passos pra direita (v), o resultado são 5 passos pra direita — ainda no eixo X! Se por algum bug a soma te jogasse para o eixo Y, <strong>o resultado "vazou" de W</strong> e ele não é subespaço.
+          </div>
+        </div>
+        <div class="intuition-step">
+          <div class="intuition-step-n">3</div>
+          <div class="intuition-step-body">
+            <strong>🔄 Efeito Elástico: v ∈ W, λ ∈ ℝ ⟹ λv ∈ W</strong><br>
+            Se você esticar, encolher ou inverter um vetor de W (multiplicar por qualquer número real λ), ele não pode sair de W. <br>
+            <em>Exemplo:</em> Se você tem um vetor apontando para o Leste dentro de W e multiplica por 3 (estica) ou por −1 (inverte para o Oeste), ele tem que continuar na linha Leste-Oeste. Não pode fazer uma curva mágica para o Norte.
+          </div>
+        </div>
+
+        <div class="intuition-summary"><strong>Resumo da obra:</strong> O Subespaço é uma caixa VIP. Você pode somar e multiplicar os membros ali dentro o quanto quiser, mas o resultado nunca pode ser alguém que não tenha o ingresso VIP (que não pertença a W).</div>
+      </div>
+    </div>
   </div>
 
   <div class="ex-card">
@@ -1127,6 +1585,43 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
     <div class="reveal-box" id="rv-t03"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
     Um <strong>conjunto gerador</strong> é qualquer conjunto cujo span é igual a V (todo vetor de V é CL dele). Ele pode ter vetores redundantes (LD).<br><br>
     Uma <strong>base</strong> é um conjunto gerador que também é <strong>LI</strong> — ou seja, é o conjunto gerador <em>mínimo</em>, sem redundâncias. A base representa as "peças fundamentais" do espaço. A dimensão de V é justamente o número de vetores de qualquer base.</div></div>
+    <button class="intuition-btn" onclick="revealToggle(this,'intuition-t03')">🧹 Ver explicação intuitiva (Clean Code!)</button>
+    <div class="intuition-box" id="intuition-t03">
+      <div class="intuition-inner">
+        <div class="intuition-tag">🕹️ O Conjunto Gerador — O Código "Força Bruta"</div>
+
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:14px">Imagine que você está programando os controles de movimento de um personagem num mapa 2D. Você cria um controle com <strong style="color:var(--text)">4 botões (vetores)</strong>:</p>
+
+        <div class="intuition-scenario">
+          <span class="sc-label">📋 O controle com redundâncias (Gerador LD)</span>
+          <strong>v₁</strong> — Andar para o Norte<br>
+          <strong>v₂</strong> — Andar para o Leste<br>
+          <strong>v₃</strong> — Andar para o Nordeste (Norte + Leste) ← <span style="color:var(--a2)">redundante!</span><br>
+          <strong>v₄</strong> — Andar 2 passos para o Norte ← <span style="color:var(--a2)">redundante!</span><br><br>
+          Com esses 4 botões, você consegue chegar em <strong>absolutamente qualquer ponto do mapa</strong>? Sim! Eles <strong>geram</strong> todo o espaço. Isso é um <strong>Conjunto Gerador</strong>.<br><br>
+          Mas note o problema: <strong>o código está inchado</strong>. O botão v₃ (Nordeste) é inútil — é só apertar v₁+v₂. O botão v₄ é inútil — é só apertar v₁ duas vezes. Esse conjunto tem redundâncias (é <strong>Linearmente Dependente</strong>).
+        </div>
+
+        <div class="intuition-tag" style="margin-top:20px">🧹 A Base — O "Clean Code"</div>
+
+        <div class="intuition-scenario">
+          <span class="sc-label green">✅ Após o Code Review (Base LI)</span>
+          Você, como um bom programador, faz uma <strong>refatoração</strong> e deleta os botões redundantes v₃ e v₄. Sobram apenas:<br><br>
+          <strong>v₁</strong> — Andar para o Norte<br>
+          <strong>v₂</strong> — Andar para o Leste<br><br>
+          Você ainda consegue chegar em qualquer lugar? <strong>Sim!</strong> (continua sendo Gerador) ✅<br>
+          Tem algum botão inútil? <strong>Não!</strong> Um é totalmente independente do outro (é LI) ✅<br><br>
+          Quando você tem um Gerador que também é LI, você atingiu o <strong>código perfeito</strong>. Você encontrou a <strong>Base</strong> daquele espaço.
+        </div>
+
+        <div class="intuition-summary" style="border-color:var(--a3);background:rgba(52,211,153,.06)">
+          <strong style="color:var(--a3)">O Veredito:</strong><br>
+          • <strong>Gerador</strong> aceita lixo — aceita vetores duplicados e paralelos, desde que cumpra a missão de cobrir o espaço inteiro.<br>
+          • <strong>Base</strong> exige exclusividade — todo vetor precisa apontar para uma direção matematicamente inédita (ser LI).<br><br>
+          E a <strong>Dimensão</strong>? É basicamente o <span class="icode">vetores.length</span> do seu array final. Se no mapa 2D você precisou de exatamente 2 botões para a Base perfeita, a dimensão é 2. Num jogo 3D com botão de Pular (eixo Z), a dimensão seria 3.
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="ex-card">
@@ -1374,14 +1869,70 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
     <strong>Dica:</strong> Para matrizes triangulares, os autovalores são sempre os elementos da DIAGONAL PRINCIPAL!</div></div>
   </div>
 
+  <!-- ── COMPOSIÇÃO ── -->
+  <div class="ex-section-label" style="color:var(--a4)">🔀 Composição de TL — Conteúdo de Prova</div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge teoria" style="background:rgba(251,146,60,.12);color:var(--a4);border-color:rgba(251,146,60,.25)">T-06</span>
+    <div class="ex-title">O que é a composição G∘F de duas transformações lineares? Qual é a diferença entre G∘F e F∘G?</div></div>
+    <span class="ans-label">✏️ Sua resposta</span>
+    <textarea class="ans-area" placeholder="Escreva sua resposta aqui..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-t06')">🔍 Ver resposta esperada</button>
+    <div class="reveal-box" id="rv-t06"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
+    A composição G∘F é uma nova transformação linear definida por (G∘F)(u) = G(F(u)), onde F age primeiro transformando u em F(u), e depois G transforma F(u) no resultado final. O domínio de G∘F é o domínio de F e o contradomínio é o contradomínio de G.<br><br>
+    <strong>G∘F ≠ F∘G</strong> em geral — a composição não é comutativa! A ordem importa: G∘F significa "aplica F, depois G", enquanto F∘G significa "aplica G, depois F". Via matrizes: se F↔A e G↔B, então G∘F↔B·A e F∘G↔A·B, e produto matricial não comuta.</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-09</span>
+    <div class="ex-title">Sejam F(x,y) = (x+y, 2x) e G(x,y) = (y, x−y). Qual é (G∘F)(1, 2)?</div></div>
+    <div class="opts" data-correct="b" data-expl="Passo 1: F(1,2) = (1+2, 2·1) = (3, 2). Passo 2: G(3,2) = (2, 3−2) = (2, 1). Portanto (G∘F)(1,2) = (2, 1). Lembre: G∘F significa aplicar F primeiro, depois G.">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> (3, 2)</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> (2, 1)</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> (3, 1)</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> (1, 3)</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge vf">V/F-06</span>
+    <div class="ex-title">A composição de duas transformações lineares é sempre comutativa: G∘F = F∘G.</div></div>
+    <div class="vf-row">
+      <button class="vf-btn vf-v" onclick="vfAnswer(this,'F','FALSO! A composição de TL não é comutativa em geral. G∘F ≠ F∘G. A exceção ocorre em casos muito específicos (ex: F = identidade, ou F e G diagonalizam na mesma base). Via matrizes: B·A ≠ A·B em geral. Nunca assuma comutatividade!')">VERDADEIRO</button>
+      <button class="vf-btn vf-f" onclick="vfAnswer(this,'F','FALSO! A composição de TL não é comutativa em geral. G∘F ≠ F∘G. A exceção ocorre em casos muito específicos (ex: F = identidade, ou F e G diagonalizam na mesma base). Via matrizes: B·A ≠ A·B em geral. Nunca assuma comutatividade!')">FALSO</button>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge calc">C-05</span>
+    <div class="ex-title">Sejam F(x,y) = (x−y, 2y) e G(x,y) = (3x, x+y). Calcule (G∘F)(x,y) e (F∘G)(x,y) e compare.</div></div>
+    <span class="ans-label">✏️ Sua solução</span>
+    <textarea class="ans-area mono" placeholder="G∘F: aplique F primeiro, depois G no resultado...&#10;F∘G: aplique G primeiro, depois F no resultado..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-c05')">🔍 Ver solução</button>
+    <div class="reveal-box" id="rv-c05"><div class="tip"><strong style="color:var(--a3)">✅ Solução:</strong><br>
+    <strong>G∘F:</strong><br>
+    F(x,y) = (x−y, 2y)<br>
+    G(F(x,y)) = G(x−y, 2y) = (3(x−y), (x−y)+2y) = (3x−3y, x+y)<br>
+    <strong>∴ (G∘F)(x,y) = (3x−3y, x+y)</strong><br><br>
+    <strong>F∘G:</strong><br>
+    G(x,y) = (3x, x+y)<br>
+    F(G(x,y)) = F(3x, x+y) = (3x−(x+y), 2(x+y)) = (2x−y, 2x+2y)<br>
+    <strong>∴ (F∘G)(x,y) = (2x−y, 2x+2y)</strong><br><br>
+    <strong>Comparando:</strong> (3x−3y, x+y) ≠ (2x−y, 2x+2y) → G∘F ≠ F∘G ✅ confirmado!</div></div>
+  </div>
+
   <hr class="dv">
 
-  <!-- CHECKLIST -->
   <div class="highlight">
     <div class="hl-tag green">🎯 Checklist Final — O que dominar na prova</div>
     <div class="g2" style="margin-top:12px">
       <ul class="checklist">
         <li>Calcular norma e produto interno de vetores</li>
+        <li>Identificar módulo, direção e sentido</li>
+        <li>Aplicar Regra do Paralelogramo (com θ)</li>
+        <li>Caso particular: vetores perpendiculares √(a²+b²)</li>
         <li>Verificar os 3 critérios de subespaço</li>
         <li>Identificar combinação linear (montar sistema)</li>
         <li>Testar LI/LD via definição ou determinante</li>
@@ -1389,10 +1940,13 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
       </ul>
       <ul class="checklist">
         <li>Reconhecer se uma função é TL (verificar T(0)=0)</li>
+        <li>Verificar TL com as 2 condições (aditividade + homog.)</li>
+        <li>Distinguir TL de Operador Linear (U=V)</li>
+        <li>Calcular composição G∘F corretamente (F age primeiro!)</li>
+        <li>Saber as 3 propriedades da composição</li>
+        <li>Aplicar Teorema: dim(Ker)+dim(Im)=dim(U)</li>
         <li>Calcular equação característica det(A-λI)=0</li>
         <li>Encontrar autovetores a partir do autovalor</li>
-        <li>Aplicar Teorema: dim(Ker)+dim(Im)=dim(U)</li>
-        <li>Distinguir espaço, subespaço, base e span</li>
       </ul>
     </div>
   </div>
@@ -1404,14 +1958,18 @@ dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
 // ─── TABS ────────────────────────────────────────────────────────
 function switchTab(i){
   document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i));
-  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>{
+    b.classList.toggle('active',j===i);
+    if(j===8 && i!==8) b.style.color='#f59e0b'; // keep composição orange when not active
+    if(j===8 && i===8) b.style.color=''; // let active class handle it
+  });
 }
 
 // ─── SCORE ───────────────────────────────────────────────────────
 let ok=0, no=0, total=0;
 const MC_TOTAL = 8; // mc questions
 const VF_TOTAL = 5; // vf questions
-const GRAND = MC_TOTAL + VF_TOTAL;
+const GRAND = MC_TOTAL + VF_TOTAL + 2; // +2 MC and VF for composição
 
 function updateScore(){
   const ans = ok + no;
