@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Álgebra Linear — Guia Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060810;
+  --surface: #0c1020;
+  --surface2: #111828;
+  --surface3: #18202e;
+  --a1: #60a5fa;   /* blue */
+  --a2: #f472b6;   /* pink */
+  --a3: #34d399;   /* green */
+  --a4: #fb923c;   /* orange */
+  --a5: #a78bfa;   /* violet */
+  --text: #e2e8f8;
+  --muted: #6b7a99;
+  --border: #1c2438;
+  --math: #fde68a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Fraunces',serif;line-height:1.75;min-height:100vh;}
+
+/* ── HERO ── */
+.hero{
+  position:relative;overflow:hidden;
+  padding:70px 40px 90px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(96,165,250,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96,165,250,.04) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 60%, rgba(96,165,250,.13) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 40%, rgba(167,139,250,.1) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(52,211,153,.07) 0%, transparent 50%);
+}
+.hero-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--a3);margin-bottom:18px;position:relative;z-index:1;}
+.hero h1{font-size:clamp(2.2rem,7vw,5rem);font-weight:900;line-height:1.05;position:relative;z-index:1;margin-bottom:14px;background:linear-gradient(135deg,#fff 0%,#93c5fd 60%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-italic{font-style:italic;font-weight:400;}
+.hero-sub{color:var(--muted);font-size:.95rem;position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;}
+.hero-badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px;position:relative;z-index:1;}
+.hbadge{padding:5px 16px;border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.5px;}
+.hbadge.b{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--a1);}
+.hbadge.p{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.25);color:var(--a2);}
+.hbadge.g{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--a3);}
+
+/* ── NAV ── */
+.nav-wrap{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;}
+.nav{display:flex;max-width:1080px;margin:0 auto;}
+.nav-btn{padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{color:var(--a1);border-bottom-color:var(--a1);}
+
+/* ── LAYOUT ── */
+.panel{display:none;max-width:1080px;margin:0 auto;padding:40px 24px 60px;}
+.panel.active{display:block;}
+
+/* ── SECTION HEADERS ── */
+.sec-label{display:flex;align-items:center;gap:14px;margin-bottom:30px;}
+.sec-num{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;flex-shrink:0;}
+.sec-num.blue{background:rgba(96,165,250,.15);color:var(--a1);border:1px solid rgba(96,165,250,.25);}
+.sec-num.pink{background:rgba(244,114,182,.15);color:var(--a2);border:1px solid rgba(244,114,182,.25);}
+.sec-num.green{background:rgba(52,211,153,.15);color:var(--a3);border:1px solid rgba(52,211,153,.25);}
+.sec-num.orange{background:rgba(251,146,60,.15);color:var(--a4);border:1px solid rgba(251,146,60,.25);}
+.sec-num.violet{background:rgba(167,139,250,.15);color:var(--a5);border:1px solid rgba(167,139,250,.25);}
+h2{font-size:1.75rem;font-weight:700;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px 28px;margin-bottom:18px;transition:border-color .2s;}
+.card:hover{border-color:#253047;}
+.card-title{font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card p,.card li{font-size:.92rem;color:var(--muted);line-height:1.8;}
+.card strong,.card b{color:var(--text);}
+.card ul{padding-left:20px;}
+.card li{margin-bottom:4px;}
+
+/* ── MATH BLOCK ── */
+.math-block{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--math);
+  border-radius:0 12px 12px 0;
+  padding:16px 20px;
+  margin:14px 0;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.85rem;
+  color:var(--math);
+  line-height:2;
+  overflow-x:auto;
+}
+.math-inline{font-family:'IBM Plex Mono',monospace;color:var(--math);font-size:.88em;}
+.math-block .comment{color:var(--muted);font-style:italic;}
+
+/* ── AXIOMS ── */
+.axiom-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+.axiom{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.axiom-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--a5);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.axiom-name{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:4px;}
+.axiom-formula{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--math);}
+
+/* ── HIGHLIGHT BOX ── */
+.highlight{background:linear-gradient(135deg,rgba(96,165,250,.06),rgba(167,139,250,.04));border:1px solid rgba(96,165,250,.2);border-radius:14px;padding:20px 22px;margin:16px 0;}
+.hl-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.hl-tag.blue{color:var(--a1);}
+.hl-tag.green{color:var(--a3);}
+.hl-tag.pink{color:var(--a2);}
+.hl-tag.orange{color:var(--a4);}
+
+/* ── WARN / TIP ── */
+.tip{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.85rem;color:var(--muted);}
+.tip strong{color:var(--a3);}
+.warn{background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.85rem;color:var(--muted);}
+.warn strong{color:var(--a4);}
+
+/* ── STEPS ── */
+.steps{counter-reset:step;}
+.step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.step-n{counter-increment:step;background:var(--a1);color:#060810;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-n::before{content:counter(step);}
+.step-body{font-size:.9rem;color:var(--muted);line-height:1.7;}
+.step-body strong{color:var(--text);}
+
+/* ── DIVIDER ── */
+hr.dv{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:40px 0;}
+
+/* ── EXERCISE STYLES ── */
+.ex-section-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:32px 0 16px;display:flex;align-items:center;gap:10px;}
+.ex-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:14px;}
+.ex-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+.ex-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.ex-badge.teoria{background:rgba(244,114,182,.12);color:var(--a2);border:1px solid rgba(244,114,182,.25);}
+.ex-badge.mc{background:rgba(167,139,250,.12);color:var(--a5);border:1px solid rgba(167,139,250,.25);}
+.ex-badge.calc{background:rgba(96,165,250,.12);color:var(--a1);border:1px solid rgba(96,165,250,.25);}
+.ex-badge.vf{background:rgba(251,146,60,.12);color:var(--a4);border:1px solid rgba(251,146,60,.25);}
+.ex-badge.sub{background:rgba(52,211,153,.12);color:var(--a3);border:1px solid rgba(52,211,153,.25);}
+.ex-title{font-size:.93rem;font-weight:700;color:var(--text);line-height:1.5;}
+
+/* options */
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:flex-start;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;cursor:pointer;font-size:.87rem;color:var(--muted);transition:all .2s;user-select:none;}
+.opt:hover:not(.disabled){border-color:rgba(96,165,250,.35);color:var(--text);}
+.opt-k{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:var(--a1);background:rgba(96,165,250,.1);border-radius:5px;padding:2px 8px;flex-shrink:0;margin-top:1px;}
+.opt.correct{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.4);color:var(--a3);}
+.opt.correct .opt-k{background:rgba(52,211,153,.15);color:var(--a3);}
+.opt.wrong{background:rgba(244,114,182,.06);border-color:rgba(244,114,182,.3);color:var(--a2);opacity:.7;}
+.opt.wrong .opt-k{background:rgba(244,114,182,.12);color:var(--a2);}
+.opt.disabled{pointer-events:none;}
+
+/* verdict */
+.verdict{display:none;margin-top:12px;padding:12px 16px;border-radius:10px;font-size:.83rem;line-height:1.7;}
+.verdict.show{display:block;}
+.verdict.ok{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.22);color:var(--a3);}
+.verdict.nok{background:rgba(244,114,182,.07);border:1px solid rgba(244,114,182,.22);color:var(--a2);}
+
+/* textarea */
+.ans-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-top:14px;margin-bottom:5px;}
+.ans-area{width:100%;min-height:110px;background:#080d18;border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Fraunces',serif;font-size:.88rem;line-height:1.6;padding:14px 16px;resize:vertical;outline:none;transition:border-color .2s;}
+.ans-area:focus{border-color:var(--a1);}
+.ans-area::placeholder{color:#2a3550;}
+.ans-area.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem;}
+
+/* reveal btn */
+.reveal-btn{margin-top:10px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.22);border-radius:8px;color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;padding:7px 16px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.reveal-btn:hover{background:rgba(96,165,250,.16);}
+.reveal-box{display:none;margin-top:12px;}
+.reveal-box.show{display:block;}
+
+/* V/F buttons */
+.vf-row{display:flex;gap:10px;margin-top:12px;}
+.vf-btn{flex:1;padding:10px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;border:1px solid;transition:all .2s;text-transform:uppercase;}
+.vf-v{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:var(--a3);}
+.vf-f{background:rgba(244,114,182,.08);border-color:rgba(244,114,182,.25);color:var(--a2);}
+.vf-btn:hover{filter:brightness(1.2);}
+.vf-btn.selected-right{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.5);}
+.vf-btn.selected-wrong{background:rgba(244,114,182,.14);border-color:rgba(244,114,182,.4);}
+.vf-btn.disabled{pointer-events:none;opacity:.6;}
+
+/* scoreboard */
+.score-bar{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 20px;flex:1;min-width:100px;text-align:center;}
+.sc-val{font-size:1.7rem;font-weight:700;font-family:'IBM Plex Mono',monospace;}
+.sc-val.green{color:var(--a3);}
+.sc-val.red{color:var(--a2);}
+.sc-val.blue{color:var(--a1);}
+.sc-lbl{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:3px;}
+.progress-bg{background:var(--surface2);border-radius:20px;height:5px;overflow:hidden;margin-bottom:6px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a3));border-radius:20px;transition:width .4s;}
+
+/* ── COMPARISON TABLE ── */
+.table-wrap{overflow-x:auto;margin:14px 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+th{background:var(--surface2);color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:10px 14px;color:var(--muted);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;}
+td strong{color:var(--text);}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── GRID 2 ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr;}.axiom-grid{grid-template-columns:1fr;}.hero{padding:40px 20px 60px;}.panel{padding:24px 16px 50px;}}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:.75rem;font-family:'IBM Plex Mono',monospace;border-top:1px solid var(--border);}
+
+/* mini label */
+.mlabel{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+
+/* checklist */
+.checklist{list-style:none;padding:0;}
+.checklist li{display:flex;align-items:flex-start;gap:10px;font-size:.87rem;color:var(--muted);margin-bottom:8px;}
+.checklist li::before{content:'◻';color:var(--a1);flex-shrink:0;font-size:1rem;}
+
+/* big formula */
+.big-formula{text-align:center;padding:20px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;font-family:'IBM Plex Mono',monospace;font-size:1.1rem;color:var(--math);margin:14px 0;letter-spacing:.5px;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-tag">UNIP · 2º Ano · Ciências da Computação</div>
+  <h1>Álgebra Linear<br><span class="hero-italic">Guia Completo</span></h1>
+  <p class="hero-sub">Do básico ao avançado · Resumo + Exercícios interativos</p>
+  <div class="hero-badges">
+    <span class="hbadge b">Vetores & Espaços</span>
+    <span class="hbadge p">Dependência & Base</span>
+    <span class="hbadge g">Transformações & Autovalores</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrap">
+  <div class="nav">
+    <button class="nav-btn active" onclick="switchTab(0)">📐 Vetores</button>
+    <button class="nav-btn" onclick="switchTab(1)">🌌 Espaços</button>
+    <button class="nav-btn" onclick="switchTab(2)">🧱 Subespaço</button>
+    <button class="nav-btn" onclick="switchTab(3)">🔗 Comb. Linear</button>
+    <button class="nav-btn" onclick="switchTab(4)">🧬 Dep. Linear</button>
+    <button class="nav-btn" onclick="switchTab(5)">🏗️ Base & Dim.</button>
+    <button class="nav-btn" onclick="switchTab(6)">🔄 Trans. Linear</button>
+    <button class="nav-btn" onclick="switchTab(7)">⚡ Autovalores</button>
+    <button class="nav-btn" onclick="switchTab(8)">📝 Exercícios</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ VETORES ═══════════════════════ -->
+<div class="panel active" id="p0">
+  <div class="sec-label"><div class="sec-num blue">01</div><h2>Vetores</h2></div>
+
+  <div class="card">
+    <div class="card-title">📌 O que é um vetor?</div>
+    <p>Um vetor é um objeto matemático com <strong>magnitude (tamanho)</strong> e <strong>direção</strong>. Pode ser pensado como uma seta no espaço. Representamos com letras em negrito ou com seta: <span class="math-inline">v⃗</span> ou <span class="math-inline">v</span>.</p>
+    <div class="math-block">
+v = (v₁, v₂) ∈ ℝ²       <span class="comment">← vetor no plano</span>
+v = (v₁, v₂, v₃) ∈ ℝ³   <span class="comment">← vetor no espaço 3D</span>
+v = (v₁, v₂,..., vₙ) ∈ ℝⁿ <span class="comment">← vetor em n dimensões</span>
+    </div>
+    <div class="tip"><strong>💡 Intuição:</strong> Pense num vetor como "ir 3 passos para a direita e 4 passos para cima" → (3, 4). A origem não importa, só a direção e o tamanho.</div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title" style="color:var(--a1)">➕ Adição de Vetores</div>
+      <p>Some componente a componente. Geometricamente, é colocar uma seta após a outra.</p>
+      <div class="math-block">
+u + v = (u₁+v₁, u₂+v₂)
+
+Exemplo:
+(2,3) + (1,-1) = (3, 2)
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--a2)">✖️ Multiplicação por Escalar</div>
+      <p>Multiplica cada componente pelo número (escalar). Estica ou encolhe o vetor.</p>
+      <div class="math-block">
+λ · v = (λv₁, λv₂)
+
+Exemplo:
+3 · (2, 1) = (6, 3)
+-1 · (2, 1) = (-2, -1)
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">📏 Norma (Comprimento) de um Vetor</div>
+    <p>A norma mede o tamanho/comprimento do vetor. Também chamada de <strong>módulo</strong>.</p>
+    <div class="big-formula">‖v‖ = √(v₁² + v₂² + ... + vₙ²)</div>
+    <div class="g2">
+      <div class="math-block">
+Em ℝ²:
+v = (3, 4)
+‖v‖ = √(3² + 4²)
+    = √(9 + 16) = √25 = 5
+      </div>
+      <div class="math-block">
+Em ℝ³:
+v = (1, 2, 2)
+‖v‖ = √(1² + 2² + 2²)
+    = √(1+4+4) = √9 = 3
+      </div>
+    </div>
+    <div class="tip"><strong>💡 Vetor unitário:</strong> Um vetor com norma = 1. Para normalizar um vetor: <span class="math-inline">û = v / ‖v‖</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">🔵 Produto Interno (Escalar)</div>
+    <p>O produto interno entre dois vetores resulta em um <strong>número</strong> (escalar). Mede o quanto dois vetores "apontam na mesma direção".</p>
+    <div class="big-formula">u · v = u₁v₁ + u₂v₂ + ... + uₙvₙ</div>
+    <div class="g2">
+      <div class="math-block">
+Exemplo em ℝ³:
+u = (1, 2, 3)
+v = (4, -1, 2)
+
+u·v = 1×4 + 2×(-1) + 3×2
+    = 4 - 2 + 6 = <strong>8</strong>
+      </div>
+      <div>
+        <div class="math-block">
+Propriedade geométrica:
+u · v = ‖u‖ · ‖v‖ · cos(θ)
+
+Onde θ é o ângulo entre u e v.
+        </div>
+        <div class="tip"><strong>💡 Se u · v = 0</strong>, os vetores são <strong>perpendiculares (ortogonais)</strong>!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">✳️ Vetor Zero</div>
+    <p>O vetor zero tem todas as componentes iguais a zero. É o elemento neutro da adição.</p>
+    <div class="math-block">
+0 = (0, 0)       ← em ℝ²
+0 = (0, 0, 0)    ← em ℝ³
+
+Propriedade: v + 0 = v   para qualquer v
+    </div>
+    <div class="warn"><strong>⚠️ Atenção:</strong> O vetor zero <strong>não tem direção definida</strong>. Isso é importante para a definição de independência linear!</div>
+  </div>
+
+  <hr class="dv">
+
+  <div class="highlight">
+    <div class="hl-tag blue">📋 Resumo das Operações</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Operação</th><th>Fórmula</th><th>Resultado</th><th>Exemplo</th></tr>
+        <tr><td><strong>Soma</strong></td><td>u + v</td><td>Vetor</td><td>(1,2)+(3,1) = (4,3)</td></tr>
+        <tr><td><strong>Subtração</strong></td><td>u - v</td><td>Vetor</td><td>(3,4)-(1,1) = (2,3)</td></tr>
+        <tr><td><strong>Mult. escalar</strong></td><td>λv</td><td>Vetor</td><td>2·(1,3) = (2,6)</td></tr>
+        <tr><td><strong>Norma</strong></td><td>‖v‖</td><td>Número ≥ 0</td><td>‖(3,4)‖ = 5</td></tr>
+        <tr><td><strong>Prod. interno</strong></td><td>u · v</td><td>Número</td><td>(1,2)·(3,4) = 11</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ESPAÇO VETORIAL ═══════════════════════ -->
+<div class="panel" id="p1">
+  <div class="sec-label"><div class="sec-num violet">02</div><h2>Espaço Vetorial</h2></div>
+
+  <div class="card">
+    <div class="card-title">🌌 Definição</div>
+    <p>Um <strong>espaço vetorial</strong> (ou espaço linear) sobre um corpo 𝕂 (geralmente ℝ) é um conjunto V de vetores, equipado com duas operações:</p>
+    <ul style="margin:10px 0 0 20px">
+      <li><strong>Adição:</strong> V × V → V (soma de dois vetores é outro vetor)</li>
+      <li><strong>Multiplicação por escalar:</strong> ℝ × V → V (escalar × vetor = vetor)</li>
+    </ul>
+    <p style="margin-top:10px">Essas operações devem satisfazer <strong>8 axiomas</strong> (4 para soma + 4 para escalar).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">📜 Os 8 Axiomas do Espaço Vetorial</div>
+    <div class="axiom-grid">
+      <div class="axiom">
+        <div class="axiom-num">Axioma A1</div>
+        <div class="axiom-name">Fechamento na Adição</div>
+        <div class="axiom-formula">u, v ∈ V ⟹ u + v ∈ V</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Axioma A2</div>
+        <div class="axiom-name">Comutatividade</div>
+        <div class="axiom-formula">u + v = v + u</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Axioma A3</div>
+        <div class="axiom-name">Associatividade</div>
+        <div class="axiom-formula">(u + v) + w = u + (v + w)</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Axioma A4</div>
+        <div class="axiom-name">Elemento Neutro (Vetor Zero)</div>
+        <div class="axiom-formula">∃ 0 ∈ V : v + 0 = v</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Axioma A5</div>
+        <div class="axiom-name">Inverso Aditivo</div>
+        <div class="axiom-formula">∀v ∈ V, ∃ (-v) : v + (-v) = 0</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Axioma A6</div>
+        <div class="axiom-name">Fechamento no Escalar</div>
+        <div class="axiom-formula">λ ∈ ℝ, v ∈ V ⟹ λv ∈ V</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Axioma A7</div>
+        <div class="axiom-name">Distributiva (escalar/soma)</div>
+        <div class="axiom-formula">λ(u + v) = λu + λv</div>
+      </div>
+      <div class="axiom">
+        <div class="axiom-num">Axioma A8</div>
+        <div class="axiom-name">Escalar Unitário</div>
+        <div class="axiom-formula">1 · v = v</div>
+      </div>
+    </div>
+    <div class="tip" style="margin-top:14px"><strong>💡 Macete:</strong> Para verificar se algo é espaço vetorial, cheque os axiomas. Se <strong>qualquer um falhar</strong>, não é espaço vetorial.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">✅ Exemplos Clássicos de Espaços Vetoriais</div>
+    <div class="g2">
+      <div>
+        <div class="math-block">
+ℝⁿ — o mais comum:
+• ℝ¹ (reta)
+• ℝ² (plano)
+• ℝ³ (espaço 3D)
+• ℝⁿ (n dimensões)
+        </div>
+      </div>
+      <div>
+        <div class="math-block">
+Outros espaços:
+• Mₘₓₙ(ℝ) — matrizes m×n
+• Pₙ — polinômios grau ≤ n
+• C([a,b]) — funções contínuas
+• {0} — espaço trivial
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a2)">❌ Exemplo de NÃO-espaço vetorial</div>
+    <p>Considere o conjunto <strong>V = {(x, y) ∈ ℝ² : x ≥ 0}</strong> (semiplano direito).</p>
+    <div class="math-block">
+Teste o axioma do inverso (A5):
+Tome v = (1, 2) ∈ V
+Então -v = (-1, -2) ...mas -1 < 0!
+
+Portanto: -v ∉ V → V NÃO é espaço vetorial.
+    </div>
+    <div class="warn"><strong>⚠️ Estratégia de refutação:</strong> Para provar que algo NÃO é espaço vetorial, basta encontrar <strong>um único contraexemplo</strong> que viole um dos axiomas.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SUBESPAÇO ═══════════════════════ -->
+<div class="panel" id="p2">
+  <div class="sec-label"><div class="sec-num green">03</div><h2>Subespaço Vetorial</h2></div>
+
+  <div class="card">
+    <div class="card-title">🧱 Definição</div>
+    <p>Um subconjunto <strong>W ⊆ V</strong> é um <strong>subespaço vetorial</strong> de V se W, com as mesmas operações de V, também forma um espaço vetorial.</p>
+    <div class="tip"><strong>💡 Boa notícia:</strong> Não precisa verificar todos os 8 axiomas! Existe um critério com apenas <strong>3 condições</strong>:</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">✅ Os 3 Critérios para Subespaço</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n"></div>
+        <div class="step-body"><strong>Vetor zero:</strong> O vetor zero deve pertencer a W &nbsp;→&nbsp; <span class="math-inline">0⃗ ∈ W</span></div>
+      </div>
+      <div class="step">
+        <div class="step-n"></div>
+        <div class="step-body"><strong>Fechamento na adição:</strong> Se u, v ∈ W, então u + v ∈ W</div>
+      </div>
+      <div class="step">
+        <div class="step-n"></div>
+        <div class="step-body"><strong>Fechamento no escalar:</strong> Se v ∈ W e λ ∈ ℝ, então λv ∈ W</div>
+      </div>
+    </div>
+    <div class="warn"><strong>⚠️ Se qualquer critério falhar</strong>, não é subespaço. Comece sempre pelo critério 1 (mais fácil de checar!)</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a1)">📐 Exemplo Completo — Verificação de Subespaço</div>
+    <p style="margin-bottom:12px">Seja <strong>W = {(x, y) ∈ ℝ² : y = 2x}</strong>. Verifique se W é subespaço de ℝ².</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n"></div>
+        <div class="step-body"><strong>Vetor zero:</strong> (0, 0): é y = 2x? → 0 = 2·0 = 0 ✅ &nbsp;→ <span class="math-inline">0⃗ ∈ W</span></div>
+      </div>
+      <div class="step">
+        <div class="step-n"></div>
+        <div class="step-body"><strong>Fechamento adição:</strong> Sejam u = (x₁, 2x₁) e v = (x₂, 2x₂) ∈ W.<br>
+        u + v = (x₁+x₂, 2x₁+2x₂) = (x₁+x₂, 2(x₁+x₂)) ✅ → satisfaz y = 2x</div>
+      </div>
+      <div class="step">
+        <div class="step-n"></div>
+        <div class="step-body"><strong>Fechamento escalar:</strong> λu = (λx₁, λ·2x₁) = (λx₁, 2·λx₁) ✅ → satisfaz y = 2x</div>
+      </div>
+    </div>
+    <div class="tip"><strong>✅ Conclusão:</strong> W = {(x,y) : y = 2x} É subespaço de ℝ². Geometricamente, é uma <strong>reta passando pela origem</strong>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a2)">❌ Exemplo de NÃO-subespaço</div>
+    <p style="margin-bottom:12px">Seja <strong>W = {(x, y) ∈ ℝ² : y = 2x + 1}</strong>. Verifique se é subespaço.</p>
+    <div class="math-block">
+Critério 1 — Vetor zero: (0, 0) ∈ W?
+→ y = 2x + 1: 0 = 2·0 + 1 = 1 ❌ FALSO!
+
+Conclusão: (0,0) ∉ W → NÃO é subespaço.
+    </div>
+    <div class="warn"><strong>⚠️ Macete rápido:</strong> Qualquer conjunto definido por uma equação com <strong>termo independente diferente de zero</strong> (como y = 2x + 1) nunca é subespaço, pois o vetor zero não satisfaz a equação.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">📚 Exemplos Importantes de Subespaços</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Subespaço W em ℝ²</th><th>Geometria</th><th>É subespaço?</th></tr>
+        <tr><td><strong>y = mx</strong> (passa pela origem)</td><td>Reta pela origem</td><td>✅ Sim</td></tr>
+        <tr><td><strong>y = mx + b, b≠0</strong></td><td>Reta não passa pela origem</td><td>❌ Não</td></tr>
+        <tr><td><strong>{(0,0)}</strong></td><td>Ponto na origem</td><td>✅ Sim (trivial)</td></tr>
+        <tr><td><strong>ℝ²</strong> inteiro</td><td>Plano todo</td><td>✅ Sim (trivial)</td></tr>
+        <tr><td><strong>x ≥ 0</strong></td><td>Semiplano</td><td>❌ Não (inverso)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <hr class="dv">
+
+  <div class="highlight">
+    <div class="hl-tag orange">🔑 Subespaço Gerado (Span)</div>
+    <p style="font-size:.9rem;color:var(--muted)">Dado um conjunto de vetores <strong>{v₁, v₂, ..., vₖ}</strong>, o <strong>subespaço gerado</strong> (ou span) é o conjunto de todas as combinações lineares possíveis desses vetores:</p>
+    <div class="math-block">
+Span{v₁, v₂, ..., vₖ} = {α₁v₁ + α₂v₂ + ... + αₖvₖ : αᵢ ∈ ℝ}
+
+Exemplo:
+Span{(1,0), (0,1)} = ℝ²  ← gera todo o plano!
+Span{(1,2)} = {t(1,2) : t ∈ ℝ}  ← apenas uma reta
+    </div>
+    <div class="tip"><strong>💡</strong> O Span de qualquer conjunto de vetores <strong>sempre é um subespaço</strong>.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ COMBINAÇÃO LINEAR ═══════════════════════ -->
+<div class="panel" id="p3">
+  <div class="sec-label"><div class="sec-num pink">04</div><h2>Combinação Linear</h2></div>
+
+  <div class="card">
+    <div class="card-title">🔗 Definição</div>
+    <p>Um vetor <strong>v</strong> é combinação linear dos vetores <strong>v₁, v₂, ..., vₖ</strong> se existem escalares α₁, α₂, ..., αₖ ∈ ℝ tais que:</p>
+    <div class="big-formula">v = α₁v₁ + α₂v₂ + ... + αₖvₖ</div>
+    <div class="tip"><strong>💡 Pergunta fundamental:</strong> "Consigo formar o vetor v usando somas ponderadas dos outros vetores?"</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a1)">📐 Exemplo 1 — Verificação Simples</div>
+    <p>O vetor <strong>v = (7, 4)</strong> é CL de <strong>v₁ = (1, 0)</strong> e <strong>v₂ = (0, 1)</strong>?</p>
+    <div class="math-block">
+Queremos: α₁(1,0) + α₂(0,1) = (7,4)
+
+Sistema:
+  α₁ · 1 + α₂ · 0 = 7  →  α₁ = 7
+  α₁ · 0 + α₂ · 1 = 4  →  α₂ = 4
+
+✅ Sim! v = 7v₁ + 4v₂
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">📐 Exemplo 2 — Mais Elaborado</div>
+    <p>O vetor <strong>v = (3, 1)</strong> é CL de <strong>v₁ = (1, 2)</strong> e <strong>v₂ = (2, -1)</strong>?</p>
+    <div class="math-block">
+Queremos: α₁(1,2) + α₂(2,-1) = (3,1)
+
+Sistema de equações:
+  α₁ + 2α₂ = 3  ...(I)
+  2α₁ - α₂ = 1  ...(II)
+
+De (II): α₂ = 2α₁ - 1
+Subst. em (I): α₁ + 2(2α₁-1) = 3
+               α₁ + 4α₁ - 2 = 3
+               5α₁ = 5  →  α₁ = 1
+
+α₂ = 2(1) - 1 = 1
+
+✅ v = 1·v₁ + 1·v₂ = (1,2) + (2,-1) = (3,1) ✔
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a2)">❌ Exemplo 3 — Quando NÃO é CL</div>
+    <p>O vetor <strong>v = (1, 0)</strong> é CL de <strong>v₁ = (1, 1)</strong> e <strong>v₂ = (2, 2)</strong>?</p>
+    <div class="math-block">
+Sistema:
+  α₁ + 2α₂ = 1  ...(I)
+  α₁ + 2α₂ = 0  ...(II)
+
+Subtraindo: 0 = 1  ← ABSURDO! Sistema impossível.
+
+❌ v = (1,0) NÃO é CL de v₁ e v₂.
+    </div>
+    <div class="warn"><strong>⚠️ Observe:</strong> v₂ = 2v₁ → ambos estão na mesma reta. Eles só "cobrem" vetores da forma (t, t). (1, 0) não tem essa forma.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">🎯 Método Geral — Passo a Passo</div>
+    <div class="steps">
+      <div class="step"><div class="step-n"></div><div class="step-body">Monte o sistema linear <span class="math-inline">α₁v₁ + α₂v₂ + ... = v</span></div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">Escreva o sistema de equações (uma por componente)</div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">Resolva o sistema (substituição, eliminação ou Gauss)</div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">Se o sistema tem solução → v <strong>é</strong> CL. Se impossível → v <strong>não é</strong> CL.</div></div>
+    </div>
+  </div>
+
+  <hr class="dv">
+
+  <div class="highlight">
+    <div class="hl-tag blue">🔑 Conexão com Span</div>
+    <p style="font-size:.9rem;color:var(--muted)">O conjunto de <strong>todas</strong> as combinações lineares de {v₁,...,vₖ} é exatamente o <strong>Span{v₁,...,vₖ}</strong>. Portanto:</p>
+    <div class="math-block">
+v é CL de {v₁,...,vₖ}  ⟺  v ∈ Span{v₁,...,vₖ}
+
+Dizer que {v₁,...,vₖ} GERA V significa:
+Span{v₁,...,vₖ} = V
+(todo vetor de V é CL dos vᵢ)
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DEPENDÊNCIA LINEAR ═══════════════════════ -->
+<div class="panel" id="p4">
+  <div class="sec-label"><div class="sec-num orange">05</div><h2>Dependência e Independência Linear</h2></div>
+
+  <div class="card">
+    <div class="card-title">🧬 A Definição Unificada</div>
+    <p>O conjunto <strong>{v₁, v₂, ..., vₖ}</strong> é <strong>Linearmente Dependente (LD)</strong> se existe uma combinação linear <em>não trivial</em> igual ao vetor zero:</p>
+    <div class="big-formula">α₁v₁ + α₂v₂ + ... + αₖvₖ = 0⃗ com algum αᵢ ≠ 0</div>
+    <p style="margin-top:10px">O conjunto é <strong>Linearmente Independente (LI)</strong> se a única solução é a <em>trivial</em>:</p>
+    <div class="big-formula">α₁v₁ + α₂v₂ + ... + αₖvₖ = 0⃗  ⟹  α₁=α₂=...=αₖ=0</div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title" style="color:var(--a2)">🔴 Linearmente Dependente (LD)</div>
+      <ul>
+        <li>Algum vetor "é redundante"</li>
+        <li>Um vetor pode ser escrito como CL dos outros</li>
+        <li>O conjunto "desperdiça" um vetor</li>
+        <li>Não agrega nova direção</li>
+      </ul>
+      <div class="math-block" style="margin-top:10px">
+Exemplo:
+v₁ = (1, 2), v₂ = (2, 4)
+
+v₂ = 2v₁ → LD!
+2(1,2) + (-1)(2,4) = (0,0)
+α₁=2, α₂=-1 (não trivial)
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--a3)">🟢 Linearmente Independente (LI)</div>
+      <ul>
+        <li>Nenhum vetor é "redundante"</li>
+        <li>Nenhum pode ser escrito com os outros</li>
+        <li>Cada um aponta para nova direção</li>
+        <li>Conjunto "eficiente"</li>
+      </ul>
+      <div class="math-block" style="margin-top:10px">
+Exemplo:
+v₁ = (1, 0), v₂ = (0, 1)
+
+α₁(1,0) + α₂(0,1) = (0,0)
+→ α₁=0 e α₂=0 (só trivial)
+→ LI! ✅
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a1)">🔬 Métodos para Verificar DL/IL</div>
+
+    <p style="font-weight:700;color:var(--text);margin-bottom:8px">Método 1 — Definição (montar sistema)</p>
+    <div class="steps">
+      <div class="step"><div class="step-n"></div><div class="step-body">Escreva <span class="math-inline">α₁v₁ + α₂v₂ + ... = 0⃗</span></div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">Monte o sistema homogêneo (lado direito = 0)</div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">Se só tem solução trivial (todos αᵢ=0) → <strong>LI</strong>. Se tem solução não trivial → <strong>LD</strong>.</div></div>
+    </div>
+
+    <hr class="dv" style="margin:20px 0">
+
+    <p style="font-weight:700;color:var(--text);margin-bottom:8px">Método 2 — Determinante (para vetores em ℝⁿ)</p>
+    <div class="math-block">
+Para {v₁, v₂} em ℝ²:
+Monte a matriz com os vetores como linhas (ou colunas).
+Calcule o determinante.
+
+det(M) ≠ 0  →  LI
+det(M) = 0  →  LD
+
+Exemplo: v₁=(1,2), v₂=(3,4)
+det | 1  2 | = 1×4 - 2×3 = 4 - 6 = -2 ≠ 0
+    | 3  4 |
+→ LI! ✅
+    </div>
+
+    <div class="math-block">
+Exemplo LD: v₁=(1,2), v₂=(2,4)
+det | 1  2 | = 1×4 - 2×2 = 4 - 4 = 0
+    | 2  4 |
+→ LD! (v₂ = 2v₁)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">📏 Método 3 — Escalonamento (Gauss)</div>
+    <p>Para conjuntos maiores de vetores, monte a matriz e escalone. O número de linhas não nulas após o escalonamento indica a independência.</p>
+    <div class="math-block">
+Vetores: v₁=(1,0,1), v₂=(0,1,1), v₃=(1,1,0)
+
+Matriz aumentada [v₁|v₂|v₃]:
+| 1  0  1  | 0 |
+| 0  1  1  | 0 |
+| 1  1  0  | 0 |
+
+L₃ ← L₃ - L₁:
+| 1  0  1  | 0 |
+| 0  1  1  | 0 |
+| 0  1 -1  | 0 |
+
+L₃ ← L₃ - L₂:
+| 1  0  1  | 0 |
+| 0  1  1  | 0 |
+| 0  0 -2  | 0 |
+
+3 linhas não nulas → posto 3 → LI! ✅
+    </div>
+  </div>
+
+  <hr class="dv">
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">⚠️ Casos Especiais — Sempre Lembrar!</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Caso</th><th>Conclusão</th><th>Por quê</th></tr>
+        <tr><td>Conjunto contém o <strong>vetor zero</strong></td><td>Sempre <strong>LD</strong></td><td>1·0⃗ = 0⃗ (coef. não trivial)</td></tr>
+        <tr><td><strong>1 vetor</strong> {v} com v ≠ 0⃗</td><td>Sempre <strong>LI</strong></td><td>αv=0 implica α=0</td></tr>
+        <tr><td>Mais vetores do que dimensão</td><td>Sempre <strong>LD</strong></td><td>Pigeonhole — "cabem" no máximo n LI em ℝⁿ</td></tr>
+        <tr><td>Dois vetores paralelos</td><td>Sempre <strong>LD</strong></td><td>v₂ = λv₁</td></tr>
+        <tr><td>det ≠ 0</td><td><strong>LI</strong></td><td>Sistema só tem solução trivial</td></tr>
+        <tr><td>det = 0</td><td><strong>LD</strong></td><td>Sistema tem solução não trivial</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ BASE E DIMENSÃO ═══════════════════════ -->
+<div class="panel" id="p5">
+  <div class="sec-label"><div class="sec-num blue">06</div><h2>Base e Dimensão</h2></div>
+
+  <div class="card">
+    <div class="card-title">🏗️ Definição de Base</div>
+    <p>Um conjunto <strong>B = {v₁, v₂, ..., vₙ}</strong> é uma <strong>base</strong> de V se satisfaz <em>ambas</em> as condições:</p>
+    <div class="g2" style="margin-top:12px">
+      <div class="highlight">
+        <div class="hl-tag green">Condição 1</div>
+        <p style="font-size:.9rem;color:var(--text)"><strong>B é LI</strong> (nenhum vetor é redundante)</p>
+      </div>
+      <div class="highlight" style="background:linear-gradient(135deg,rgba(244,114,182,.06),rgba(167,139,250,.04));border-color:rgba(244,114,182,.2)">
+        <div class="hl-tag pink">Condição 2</div>
+        <p style="font-size:.9rem;color:var(--text)"><strong>B gera V</strong> (Span(B) = V)</p>
+      </div>
+    </div>
+    <div class="tip" style="margin-top:12px"><strong>💡 Em outras palavras:</strong> Base é o conjunto <strong>mínimo e suficiente</strong> para gerar todo o espaço. "Mínimo" pois é LI (sem redundâncias), "suficiente" pois gera tudo.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">📐 Bases Canônicas (Padrão)</div>
+    <div class="g2">
+      <div class="math-block">
+Base canônica de ℝ²:
+e₁ = (1, 0)
+e₂ = (0, 1)
+
+Qualquer (x, y) = x·e₁ + y·e₂
+      </div>
+      <div class="math-block">
+Base canônica de ℝ³:
+e₁ = (1, 0, 0)
+e₂ = (0, 1, 0)
+e₃ = (0, 0, 1)
+      </div>
+    </div>
+    <div class="warn"><strong>⚠️ Importante:</strong> A base não é única! Um espaço vetorial tem <strong>infinitas bases</strong>. O que é único é a <strong>quantidade de vetores</strong> da base.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">📏 Dimensão</div>
+    <p>A <strong>dimensão</strong> de um espaço vetorial V, denotada <strong>dim(V)</strong>, é o número de vetores em qualquer base de V.</p>
+    <div class="math-block">
+dim(ℝⁿ) = n
+dim(ℝ²) = 2
+dim(ℝ³) = 3
+dim({0⃗}) = 0  ← espaço trivial tem dimensão 0!
+dim(Pₙ) = n+1  ← polinômios de grau ≤ n
+    </div>
+    <div class="tip"><strong>💡 Teorema fundamental:</strong> Todas as bases de um mesmo espaço vetorial têm o <strong>mesmo número de elementos</strong>. Por isso a dimensão é bem definida.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">🔑 Propriedades Cruciais da Base</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Propriedade</th><th>Enunciado</th></tr>
+        <tr><td><strong>Unicidade da representação</strong></td><td>Todo vetor v ∈ V tem uma <em>única</em> representação como CL dos vetores da base</td></tr>
+        <tr><td><strong>Tamanho LI ≤ dim</strong></td><td>Todo conjunto LI em V tem no máximo dim(V) vetores</td></tr>
+        <tr><td><strong>Gerador ≥ dim</strong></td><td>Todo conjunto que gera V tem pelo menos dim(V) vetores</td></tr>
+        <tr><td><strong>LI com n vetores</strong></td><td>Em V com dim(V)=n, todo conjunto com n vetores LI é base</td></tr>
+        <tr><td><strong>Subespaço</strong></td><td>Se W ⊆ V subespaço, então dim(W) ≤ dim(V)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a1)">🔬 Como Encontrar uma Base — Exemplo Completo</div>
+    <p style="margin-bottom:12px">Encontre uma base para <strong>W = {(x, y, z) ∈ ℝ³ : x + y + z = 0}</strong></p>
+    <div class="steps">
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Parametrize:</strong> Da equação x = -y - z. Tome y = s, z = t livres.<br>
+      (x,y,z) = (-s-t, s, t) = s(-1,1,0) + t(-1,0,1)</div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Candidatos à base:</strong> v₁ = (-1,1,0) e v₂ = (-1,0,1)</div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Verifique LI:</strong> det[-1 1 0; -1 0 1] → R₂←R₂-R₁: [-1 1 0; 0 -1 1] → posto 2 → LI ✅</div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Conclusão:</strong> B = {(-1,1,0), (-1,0,1)} é base de W. dim(W) = 2.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TRANSFORMAÇÕES LINEARES ═══════════════════════ -->
+<div class="panel" id="p6">
+  <div class="sec-label"><div class="sec-num pink">07</div><h2>Transformações Lineares</h2></div>
+
+  <div class="card">
+    <div class="card-title">🔄 Definição</div>
+    <p>Uma função <strong>T: U → V</strong> é uma <strong>transformação linear</strong> (ou aplicação linear) se satisfaz:</p>
+    <div class="g2" style="margin-top:12px">
+      <div class="math-block">
+T1 — Aditividade:
+T(u + v) = T(u) + T(v)
+      </div>
+      <div class="math-block">
+T2 — Homogeneidade:
+T(λu) = λT(u)
+      </div>
+    </div>
+    <div class="tip"><strong>💡 Juntos equivalem a:</strong> <span class="math-inline">T(αu + βv) = αT(u) + βT(v)</span> — a transformação "respeita" a estrutura linear.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">✅ Exemplos de Transformações Lineares</div>
+    <div class="g2">
+      <div>
+        <div class="math-block">
+Identidade: T(v) = v
+
+Rotação por θ:
+T(x,y) = (x·cosθ - y·senθ,
+          x·senθ + y·cosθ)
+
+Projeção em x:
+T(x,y) = (x, 0)
+        </div>
+      </div>
+      <div>
+        <div class="math-block">
+Reflexão em eixo x:
+T(x,y) = (x, -y)
+
+Escala:
+T(x,y) = (cx, cy)
+
+Zero: T(v) = 0⃗
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>💡 Propriedade obrigatória:</strong> Toda TL satisfaz <span class="math-inline">T(0⃗) = 0⃗</span>. Se uma função não manda zero em zero, não é TL!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a2)">❌ Exemplos que NÃO são TL</div>
+    <div class="math-block">
+T(x, y) = (x + 1, y)  ← NÃO é TL!
+T(0,0) = (1, 0) ≠ (0,0)
+
+T(x, y) = (x², y)  ← NÃO é TL!
+T(2v) ≠ 2T(v): T(2,0) = (4,0), mas 2T(1,0) = 2(1,0) = (2,0)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">🎯 Núcleo e Imagem</div>
+    <div class="g2">
+      <div>
+        <div class="hl-tag violet">Núcleo (Ker)</div>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:10px">O núcleo é o conjunto de vetores que vão para zero:</p>
+        <div class="math-block">
+Ker(T) = {v ∈ U : T(v) = 0⃗}
+
+• Sempre é subespaço de U
+• Ker(T) = {0⃗} ← T é injetiva
+        </div>
+      </div>
+      <div>
+        <div class="hl-tag green">Imagem (Im)</div>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:10px">A imagem é o conjunto de todos os vetores atingidos por T:</p>
+        <div class="math-block">
+Im(T) = {T(v) : v ∈ U}
+
+• Sempre é subespaço de V
+• Im(T) = V ← T é sobrejetiva
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">📏 Teorema do Núcleo e da Imagem</div>
+    <p>Este é um dos teoremas mais importantes de Álgebra Linear:</p>
+    <div class="big-formula">dim(Ker T) + dim(Im T) = dim(U)</div>
+    <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--muted);margin-top:4px">nulidade + posto = dimensão do domínio</p>
+    <div class="math-block" style="margin-top:14px">
+Exemplo: T: ℝ³ → ℝ² definida por T(x,y,z) = (x+y, y+z)
+
+dim(U) = 3, dim(V) = 2
+
+Se T é sobrejetiva: dim(Im T) = 2
+Então: dim(Ker T) = 3 - 2 = 1
+
+(Ker tem dimensão 1 → é uma reta em ℝ³)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a1)">🔢 Representação Matricial</div>
+    <p>Toda TL entre espaços de dimensão finita pode ser representada por uma <strong>matriz</strong>:</p>
+    <div class="math-block">
+T: ℝⁿ → ℝᵐ  ↔  Matriz A de tamanho m×n
+
+T(v) = A·v
+
+Exemplo:
+T(x, y) = (2x + y, x - y)
+
+Matriz de T:
+A = | 2   1 |
+    | 1  -1 |
+
+T(3, 1) = | 2  1 | | 3 | = | 7 |
+           | 1 -1 | | 1 |   | 2 |
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ AUTOVALORES ═══════════════════════ -->
+<div class="panel" id="p7">
+  <div class="sec-label"><div class="sec-num violet">08</div><h2>Autovalores e Autovetores</h2></div>
+
+  <div class="card">
+    <div class="card-title">⚡ Definição</div>
+    <p>Dada uma transformação linear <strong>T: V → V</strong> (ou uma matriz quadrada A), um vetor <strong>v ≠ 0⃗</strong> é <strong>autovetor</strong> se ao aplicar T nele, ele apenas muda de tamanho (não de direção):</p>
+    <div class="big-formula">A · v = λ · v</div>
+    <p style="text-align:center;font-size:.85rem;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:6px">onde λ ∈ ℝ é o <strong>autovalor</strong> correspondente</p>
+    <div class="tip"><strong>💡 Intuição:</strong> O autovetor é uma direção "especial" que a transformação não "dobra" — apenas estica (λ > 1), encolhe (0 < λ < 1), mantém (λ=1) ou inverte (λ < 0).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a4)">📐 Como Encontrar Autovalores</div>
+    <p>A equação <span class="math-inline">Av = λv</span> pode ser reescrita como:</p>
+    <div class="math-block">
+Av = λv
+Av - λv = 0
+(A - λI)v = 0
+
+Para v ≠ 0⃗, o sistema deve ter solução não trivial.
+Isso ocorre quando:
+
+det(A - λI) = 0  ← EQUAÇÃO CARACTERÍSTICA
+    </div>
+    <div class="tip"><strong>💡 Polinômio característico:</strong> <span class="math-inline">p(λ) = det(A - λI)</span> é um polinômio em λ. Suas raízes são os autovalores!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a1)">🔬 Exemplo Completo — 2×2</div>
+    <p style="margin-bottom:12px">Encontre os autovalores e autovetores de:</p>
+    <div class="math-block" style="text-align:center">
+A = | 4   1 |
+    | 2   3 |
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Equação característica:</strong>
+      <div class="math-block">
+det(A - λI) = det| 4-λ   1  | = (4-λ)(3-λ) - 1·2
+                  | 2    3-λ |
+= 12 - 4λ - 3λ + λ² - 2
+= λ² - 7λ + 10 = 0
+      </div></div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Raízes:</strong>
+      <div class="math-block">
+λ² - 7λ + 10 = 0
+(λ - 5)(λ - 2) = 0
+λ₁ = 5  e  λ₂ = 2
+      </div></div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Autovetor de λ₁ = 5:</strong>
+      <div class="math-block">
+(A - 5I)v = 0
+| -1   1 | | x |   | 0 |
+|  2  -2 | | y | = | 0 |
+→ -x + y = 0  →  y = x
+→ v₁ = t(1, 1), t ≠ 0
+      </div></div></div>
+      <div class="step"><div class="step-n"></div>
+      <div class="step-body"><strong>Autovetor de λ₂ = 2:</strong>
+      <div class="math-block">
+(A - 2I)v = 0
+| 2   1 | | x |   | 0 |
+| 2   1 | | y | = | 0 |
+→ 2x + y = 0  →  y = -2x
+→ v₂ = t(1, -2), t ≠ 0
+      </div></div></div>
+    </div>
+    <div class="tip"><strong>✅ Verificação:</strong> A·(1,1) = (5, 5) = 5·(1,1) ✔ e A·(1,-2) = (2,-4) = 2·(1,-2) ✔</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a5)">📋 Autospaço (Espaço Próprio)</div>
+    <p>Para cada autovalor λ, o <strong>autoespaço</strong> (ou espaço próprio) é o conjunto de todos os autovetores associados a λ, mais o vetor zero:</p>
+    <div class="math-block">
+E_λ = Ker(A - λI) = {v : Av = λv}
+
+E_λ sempre é subespaço de V!
+dim(E_λ) ≥ 1 (pois tem pelo menos um autovetor)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--a3)">📝 Resumo do Processo</div>
+    <div class="steps">
+      <div class="step"><div class="step-n"></div><div class="step-body">Calcule <span class="math-inline">det(A - λI) = 0</span> → polinômio característico</div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">Encontre as raízes λ₁, λ₂, ... → esses são os autovalores</div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">Para cada λᵢ, resolva <span class="math-inline">(A - λᵢI)v = 0</span> → sistema homogêneo</div></div>
+      <div class="step"><div class="step-n"></div><div class="step-body">As soluções não triviais são os autovetores correspondentes</div></div>
+    </div>
+    <div class="warn"><strong>⚠️ Lembre:</strong> O vetor zero <strong>nunca</strong> é autovetor, mesmo que (A-λI)·0 = 0 sempre. Por definição, autovetor ≠ 0⃗.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ EXERCÍCIOS ═══════════════════════ -->
+<div class="panel" id="p8">
+
+  <!-- PLACAR -->
+  <div class="score-bar">
+    <div class="sc"><div class="sc-val green" id="sc-ok">0</div><div class="sc-lbl">Corretas</div></div>
+    <div class="sc"><div class="sc-val red" id="sc-no">0</div><div class="sc-lbl">Erradas</div></div>
+    <div class="sc"><div class="sc-val blue" id="sc-pc">0%</div><div class="sc-lbl">Aproveit.</div></div>
+  </div>
+  <div class="progress-bg"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:1px;" id="prog-txt">0 de 20 questões respondidas</p>
+
+  <!-- ── TEORIA ── -->
+  <div class="ex-section-label" style="color:var(--a2)">🔴 Questões Teóricas</div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge teoria">T-01</span>
+    <div class="ex-title">O que significa dizer que um conjunto de vetores é <strong>linearmente independente</strong>? Explique com suas palavras e dê um exemplo em ℝ².</div></div>
+    <span class="ans-label">✏️ Sua resposta</span>
+    <textarea class="ans-area" placeholder="Escreva sua resposta aqui..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-t01')">🔍 Ver resposta esperada</button>
+    <div class="reveal-box" id="rv-t01"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
+    Um conjunto {v₁,...,vₖ} é LI se a única maneira de obter o vetor zero como combinação linear é com todos os coeficientes iguais a zero: α₁v₁+...+αₖvₖ=0 ⟹ α₁=...=αₖ=0. Isso significa que nenhum vetor do conjunto pode ser obtido como combinação linear dos demais — cada um "aponta para uma direção nova".<br><br>
+    <strong>Exemplo:</strong> {(1,0), (0,1)} é LI em ℝ². Se α₁(1,0)+α₂(0,1)=(0,0), então α₁=0 e α₂=0. Nenhum é múltiplo do outro.</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge teoria">T-02</span>
+    <div class="ex-title">Quais são os 3 critérios para verificar se um subconjunto W é um <strong>subespaço vetorial</strong>? Por que não precisamos verificar todos os 8 axiomas?</div></div>
+    <span class="ans-label">✏️ Sua resposta</span>
+    <textarea class="ans-area" placeholder="Escreva sua resposta aqui..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-t02')">🔍 Ver resposta esperada</button>
+    <div class="reveal-box" id="rv-t02"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
+    Os 3 critérios são: (1) 0⃗ ∈ W; (2) u,v ∈ W ⟹ u+v ∈ W; (3) v ∈ W, λ ∈ ℝ ⟹ λv ∈ W.<br><br>
+    Não precisamos verificar todos os 8 axiomas porque W já é subconjunto de V (espaço vetorial), então as propriedades como comutatividade, associatividade e distributividade são herdadas automaticamente de V. Os 3 critérios garantem que as operações não "saem" de W e que W tem o vetor zero, o que é suficiente.</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge teoria">T-03</span>
+    <div class="ex-title">Qual é a diferença entre <strong>base</strong> e <strong>conjunto gerador</strong>? O que a base tem que o gerador não exige?</div></div>
+    <span class="ans-label">✏️ Sua resposta</span>
+    <textarea class="ans-area" placeholder="Escreva sua resposta aqui..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-t03')">🔍 Ver resposta esperada</button>
+    <div class="reveal-box" id="rv-t03"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
+    Um <strong>conjunto gerador</strong> é qualquer conjunto cujo span é igual a V (todo vetor de V é CL dele). Ele pode ter vetores redundantes (LD).<br><br>
+    Uma <strong>base</strong> é um conjunto gerador que também é <strong>LI</strong> — ou seja, é o conjunto gerador <em>mínimo</em>, sem redundâncias. A base representa as "peças fundamentais" do espaço. A dimensão de V é justamente o número de vetores de qualquer base.</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge teoria">T-04</span>
+    <div class="ex-title">Explique o que é uma <strong>transformação linear</strong> e quais as duas propriedades que ela deve satisfazer. Por que T(0⃗) = 0⃗ é sempre verdade para TL?</div></div>
+    <span class="ans-label">✏️ Sua resposta</span>
+    <textarea class="ans-area" placeholder="Escreva sua resposta aqui..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-t04')">🔍 Ver resposta esperada</button>
+    <div class="reveal-box" id="rv-t04"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
+    TL é uma função T:U→V que preserva a estrutura vetorial via: (1) Aditividade: T(u+v)=T(u)+T(v); (2) Homogeneidade: T(λu)=λT(u).<br><br>
+    T(0⃗) = 0⃗ segue diretamente da homogeneidade: T(0⃗) = T(0·v) = 0·T(v) = 0⃗. Logo qualquer função que não mande zero em zero <strong>jamais</strong> pode ser TL.</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge teoria">T-05</span>
+    <div class="ex-title">O que são <strong>autovalores e autovetores</strong>? Qual é a equação fundamental e como calculamos os autovalores na prática?</div></div>
+    <span class="ans-label">✏️ Sua resposta</span>
+    <textarea class="ans-area" placeholder="Escreva sua resposta aqui..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-t05')">🔍 Ver resposta esperada</button>
+    <div class="reveal-box" id="rv-t05"><div class="tip"><strong style="color:var(--a3)">✅ Resposta esperada:</strong><br>
+    Dado A matriz quadrada, v≠0 é autovetor e λ é autovalor se Av = λv. O autovetor é uma direção que a transformação só escala, sem mudar a direção.<br><br>
+    Para calcular: rearranjamos Av - λv = (A-λI)v = 0. Para v≠0, o sistema deve ter solução não trivial, o que exige det(A-λI) = 0 (equação característica). As raízes do polinômio p(λ)=det(A-λI) são os autovalores. Para cada autovalor, resolvemos (A-λI)v=0 para obter os autovetores.</div></div>
+  </div>
+
+  <!-- ── V/F ── -->
+  <div class="ex-section-label" style="color:var(--a4)">🟡 Verdadeiro ou Falso</div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge vf">V/F-01</span>
+    <div class="ex-title">O conjunto W = {(x, y) ∈ ℝ² : y = 3x + 2} é um subespaço de ℝ².</div></div>
+    <div class="vf-row">
+      <button class="vf-btn vf-v" onclick="vfAnswer(this,'F','O vetor zero (0,0): y = 3·0 + 2 = 2 ≠ 0. Portanto (0,0) ∉ W → critério 1 falha → NÃO é subespaço! A constante +2 impede que o vetor zero pertença ao conjunto.')">VERDADEIRO</button>
+      <button class="vf-btn vf-f" onclick="vfAnswer(this,'F','O vetor zero (0,0): y = 3·0 + 2 = 2 ≠ 0. Portanto (0,0) ∉ W → critério 1 falha → NÃO é subespaço! A constante +2 impede que o vetor zero pertença ao conjunto.')">FALSO</button>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge vf">V/F-02</span>
+    <div class="ex-title">Um conjunto com o vetor zero é sempre linearmente dependente.</div></div>
+    <div class="vf-row">
+      <button class="vf-btn vf-v" onclick="vfAnswer(this,'V','VERDADEIRO! Se 0⃗ ∈ {v₁,...,vₖ}, digamos v₁ = 0⃗, então 1·v₁ + 0·v₂ + ... = 0⃗ é uma combinação não trivial igual a zero (coef. 1 ≠ 0). Logo o conjunto é sempre LD.')">VERDADEIRO</button>
+      <button class="vf-btn vf-f" onclick="vfAnswer(this,'V','VERDADEIRO! Se 0⃗ ∈ {v₁,...,vₖ}, digamos v₁ = 0⃗, então 1·v₁ + 0·v₂ + ... = 0⃗ é uma combinação não trivial igual a zero (coef. 1 ≠ 0). Logo o conjunto é sempre LD.')">FALSO</button>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge vf">V/F-03</span>
+    <div class="ex-title">Se dim(V) = n, então qualquer conjunto com mais de n vetores é linearmente dependente.</div></div>
+    <div class="vf-row">
+      <button class="vf-btn vf-v" onclick="vfAnswer(this,'V','VERDADEIRO! Em um espaço de dimensão n, no máximo n vetores podem ser LI. Com n+1 ou mais vetores, pelo menos um é CL dos outros. Isso é uma consequência direta do teorema de que conjuntos LI têm no máximo dim(V) elementos.')">VERDADEIRO</button>
+      <button class="vf-btn vf-f" onclick="vfAnswer(this,'V','VERDADEIRO! Em um espaço de dimensão n, no máximo n vetores podem ser LI. Com n+1 ou mais vetores, pelo menos um é CL dos outros. Isso é uma consequência direta do teorema de que conjuntos LI têm no máximo dim(V) elementos.')">FALSO</button>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge vf">V/F-04</span>
+    <div class="ex-title">Se u · v = 0, então u e v são linearmente dependentes.</div></div>
+    <div class="vf-row">
+      <button class="vf-btn vf-v" onclick="vfAnswer(this,'F','FALSO! Produto interno zero significa ORTOGONALIDADE (vetores perpendiculares), não dependência linear. Exemplo: e₁=(1,0) e e₂=(0,1): e₁·e₂ = 0, mas são LI (formam a base canônica!). Confundir ortogonalidade com dependência é um erro clássico.')">VERDADEIRO</button>
+      <button class="vf-btn vf-f" onclick="vfAnswer(this,'F','FALSO! Produto interno zero significa ORTOGONALIDADE (vetores perpendiculares), não dependência linear. Exemplo: e₁=(1,0) e e₂=(0,1): e₁·e₂ = 0, mas são LI (formam a base canônica!). Confundir ortogonalidade com dependência é um erro clássico.')">FALSO</button>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge vf">V/F-05</span>
+    <div class="ex-title">O vetor zero pode ser autovetor de uma transformação linear.</div></div>
+    <div class="vf-row">
+      <button class="vf-btn vf-v" onclick="vfAnswer(this,'F','FALSO! Por definição, autovetor deve ser não nulo (v ≠ 0⃗). Embora A·0⃗ = 0⃗ = λ·0⃗ para qualquer λ, o vetor zero é excluído da definição de autovetor exatamente para que os autovalores sejam significativos.')">VERDADEIRO</button>
+      <button class="vf-btn vf-f" onclick="vfAnswer(this,'F','FALSO! Por definição, autovetor deve ser não nulo (v ≠ 0⃗). Embora A·0⃗ = 0⃗ = λ·0⃗ para qualquer λ, o vetor zero é excluído da definição de autovetor exatamente para que os autovalores sejam significativos.')">FALSO</button>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- ── MÚLTIPLA ESCOLHA ── -->
+  <div class="ex-section-label" style="color:var(--a5)">🟣 Múltipla Escolha</div>
+
+  <!-- MC-01 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-01</span>
+    <div class="ex-title">Qual dos conjuntos abaixo é um subespaço vetorial de ℝ³?</div></div>
+    <div class="opts" data-correct="c" data-expl="W = {(x,y,z): x+y+z=0}: (1) (0,0,0): 0+0+0=0 ✅; (2) Se x₁+y₁+z₁=0 e x₂+y₂+z₂=0, somando: (x₁+x₂)+(y₁+y₂)+(z₁+z₂)=0 ✅; (3) λ(x+y+z) = λ·0 = 0 ✅. Os outros: A contém (1,0,0) mas não (0,-1,0) nos satisfaz. B tem +1 (não contém zero). D: não fechado para escalar (λ·inteiro pode não ser inteiro).">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> W = {(x, y, z) ∈ ℝ³ : x ≥ 0}</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> W = {(x, y, z) ∈ ℝ³ : x + y + z = 1}</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> W = {(x, y, z) ∈ ℝ³ : x + y + z = 0}</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> W = {(x, y, z) ∈ ℤ³} (inteiros)</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- MC-02 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-02</span>
+    <div class="ex-title">Os vetores v₁ = (1, 2, 3) e v₂ = (2, 4, 6) são:</div></div>
+    <div class="opts" data-correct="b" data-expl="v₂ = 2·v₁ (componente a componente: 2=2·1, 4=2·2, 6=2·3). Portanto v₂ é combinação linear de v₁. Pelo determinante: a matriz formada por eles tem posto 1 < 2, então det=0 → LD. Geometricamente, são paralelos (mesma direção).">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> Linearmente independentes, pois têm normas diferentes</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> Linearmente dependentes, pois v₂ = 2v₁</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> Ortogonais, pois o produto interno é zero</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> Linearmente independentes, pois são não nulos</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- MC-03 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-03</span>
+    <div class="ex-title">Qual é a dimensão do espaço W = {(x,y,z) ∈ ℝ³ : 2x - y + z = 0}?</div></div>
+    <div class="opts" data-correct="c" data-expl="Da equação: y = 2x + z. Com x=s, z=t livres: (s, 2s+t, t) = s(1,2,0) + t(0,1,1). A base é {(1,2,0), (0,1,1)}, que são LI (não proporcionais). Logo dim(W) = 2. Em geral, uma equação linear homogênea em ℝ³ define um subespaço de dimensão 2 (um plano pela origem).">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> 0</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> 1</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> 2</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> 3</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- MC-04 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-04</span>
+    <div class="ex-title">A norma do vetor v = (3, -4, 0) é:</div></div>
+    <div class="opts" data-correct="c" data-expl="‖v‖ = √(3² + (-4)² + 0²) = √(9 + 16 + 0) = √25 = 5. É o clássico triângulo 3-4-5!">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> 7</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> √7</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> 5</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> 25</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- MC-05 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-05</span>
+    <div class="ex-title">Se T: ℝ³ → ℝ² é uma transformação linear sobrejetiva (Im T = ℝ²), qual é a dimensão do Núcleo de T?</div></div>
+    <div class="opts" data-correct="b" data-expl="Pelo Teorema do Núcleo e da Imagem: dim(Ker T) + dim(Im T) = dim(domínio) = 3. Como T é sobrejetiva, Im T = ℝ², então dim(Im T) = 2. Portanto dim(Ker T) = 3 - 2 = 1.">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> 0</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> 1</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> 2</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> 3</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- MC-06 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-06</span>
+    <div class="ex-title">O produto interno (1, 2, -1) · (3, 0, 3) é:</div></div>
+    <div class="opts" data-correct="a" data-expl="(1)(3) + (2)(0) + (-1)(3) = 3 + 0 - 3 = 0. Os vetores são ORTOGONAIS (perpendiculares)! O produto interno zero indica que eles formam 90° entre si.">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> 0</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> 6</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> -6</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> 9</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- MC-07 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-07</span>
+    <div class="ex-title">Quantos vetores tem uma base do espaço dos polinômios de grau ≤ 3, denotado P₃?</div></div>
+    <div class="opts" data-correct="d" data-expl="A base canônica de P₃ é {1, x, x², x³} — são 4 polinômios. Em geral, dim(Pₙ) = n+1. Para n=3: dim(P₃) = 4. Qualquer base de P₃ tem exatamente 4 elementos.">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> 2</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> 3</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> ∞ (infinitos)</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> 4</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- MC-08 -->
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge mc">MC-08</span>
+    <div class="ex-title">A matriz A = | 2  0 | tem autovalores:</div></div>
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--muted);margin:8px 0 0 36px;">A = | 2&nbsp;&nbsp;0 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 0&nbsp;&nbsp;5 |</p>
+    <div class="opts" data-correct="b" data-expl="Para matrizes diagonais, os autovalores são os próprios elementos da diagonal! det(A-λI) = det|2-λ  0| = (2-λ)(5-λ) = 0. Portanto λ₁=2 e λ₂=5. Os autovetores correspondentes são e₁=(1,0) e e₂=(0,1)." style="margin-top:12px">
+      <div class="opt" data-val="a"><span class="opt-k">A</span> λ = 1 e λ = 10</div>
+      <div class="opt" data-val="b"><span class="opt-k">B</span> λ = 2 e λ = 5</div>
+      <div class="opt" data-val="c"><span class="opt-k">C</span> λ = 0 e λ = 7</div>
+      <div class="opt" data-val="d"><span class="opt-k">D</span> λ = 2 apenas</div>
+    </div>
+    <div class="verdict"></div>
+  </div>
+
+  <!-- ── CÁLCULO ── -->
+  <div class="ex-section-label" style="color:var(--a1)">🔵 Cálculo com Gabarito</div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge calc">C-01</span>
+    <div class="ex-title">Verifique se W = {(x, y) ∈ ℝ² : x - 2y = 0} é subespaço de ℝ². Mostre os 3 critérios.</div></div>
+    <span class="ans-label">✏️ Sua solução</span>
+    <textarea class="ans-area mono" placeholder="Critério 1 — Vetor zero:&#10;Critério 2 — Soma:&#10;Critério 3 — Escalar:" style="min-height:140px"></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-c01')">🔍 Ver solução</button>
+    <div class="reveal-box" id="rv-c01"><div class="tip"><strong style="color:var(--a3)">✅ Solução:</strong><br>
+    <strong>Crit. 1:</strong> (0,0): 0 - 2·0 = 0 ✅ → 0⃗ ∈ W<br>
+    <strong>Crit. 2:</strong> u=(x₁,y₁) e v=(x₂,y₂) ∈ W, logo x₁=2y₁ e x₂=2y₂.<br>
+    u+v = (x₁+x₂, y₁+y₂): (x₁+x₂)-2(y₁+y₂) = (x₁-2y₁)+(x₂-2y₂) = 0+0 = 0 ✅<br>
+    <strong>Crit. 3:</strong> λu = (λx₁, λy₁): λx₁ - 2λy₁ = λ(x₁-2y₁) = λ·0 = 0 ✅<br>
+    <strong>Conclusão:</strong> W é subespaço de ℝ² (geometricamente é uma reta y = x/2 pela origem).</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge calc">C-02</span>
+    <div class="ex-title">Verifique se o vetor v = (5, 3) é combinação linear de v₁ = (1, 1) e v₂ = (2, 0).</div></div>
+    <span class="ans-label">✏️ Sua solução</span>
+    <textarea class="ans-area mono" placeholder="Monte o sistema: α₁(1,1) + α₂(2,0) = (5,3)&#10;..." style="min-height:130px"></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-c02')">🔍 Ver solução</button>
+    <div class="reveal-box" id="rv-c02"><div class="tip"><strong style="color:var(--a3)">✅ Solução:</strong><br>
+    Sistema: α₁ + 2α₂ = 5 (componente x)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;α₁ + 0·α₂ = 3 (componente y)<br>
+    Da 2ª equação: α₁ = 3<br>
+    Subst. na 1ª: 3 + 2α₂ = 5 → α₂ = 1<br>
+    <strong>Verificação:</strong> 3·(1,1) + 1·(2,0) = (3,3) + (2,0) = (5,3) ✅<br>
+    <strong>Resposta:</strong> Sim! v = 3v₁ + 1v₂.</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge calc">C-03</span>
+    <div class="ex-title">Determine se {v₁ = (1,0,1), v₂ = (0,1,0), v₃ = (1,1,1)} são LI ou LD usando determinante.</div></div>
+    <span class="ans-label">✏️ Sua solução</span>
+    <textarea class="ans-area mono" placeholder="Monte a matriz 3×3 com os vetores como linhas...&#10;Calcule o determinante..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-c03')">🔍 Ver solução</button>
+    <div class="reveal-box" id="rv-c03"><div class="tip"><strong style="color:var(--a3)">✅ Solução:</strong><br>
+    Matriz: | 1  0  1 |<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 0  1  0 |<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 1  1  1 |<br><br>
+    det = 1·(1·1 - 0·1) - 0·(0·1 - 0·1) + 1·(0·1 - 1·1)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;= 1·(1) - 0 + 1·(-1) = 1 - 1 = <strong>0</strong><br><br>
+    <strong>det = 0 → Linearmente DEPENDENTES!</strong><br>
+    De fato: v₃ = v₁ + v₂ → (1,0,1)+(0,1,0) = (1,1,1) ✅</div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-header"><span class="ex-badge calc">C-04</span>
+    <div class="ex-title">Encontre os autovalores da matriz A = | 3  1 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 0  2 |</div></div>
+    <span class="ans-label">✏️ Sua solução</span>
+    <textarea class="ans-area mono" placeholder="det(A - λI) = 0&#10;..."></textarea>
+    <button class="reveal-btn" onclick="revealToggle(this,'rv-c04')">🔍 Ver solução</button>
+    <div class="reveal-box" id="rv-c04"><div class="tip"><strong style="color:var(--a3)">✅ Solução:</strong><br>
+    det(A - λI) = det| 3-λ  1 | = (3-λ)(2-λ) - 0·1<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 0   2-λ|<br>
+    = (3-λ)(2-λ) = 0<br>
+    → λ₁ = <strong>3</strong> e λ₂ = <strong>2</strong><br><br>
+    <strong>Dica:</strong> Para matrizes triangulares, os autovalores são sempre os elementos da DIAGONAL PRINCIPAL!</div></div>
+  </div>
+
+  <hr class="dv">
+
+  <!-- CHECKLIST -->
+  <div class="highlight">
+    <div class="hl-tag green">🎯 Checklist Final — O que dominar na prova</div>
+    <div class="g2" style="margin-top:12px">
+      <ul class="checklist">
+        <li>Calcular norma e produto interno de vetores</li>
+        <li>Verificar os 3 critérios de subespaço</li>
+        <li>Identificar combinação linear (montar sistema)</li>
+        <li>Testar LI/LD via definição ou determinante</li>
+        <li>Identificar base e calcular dimensão</li>
+      </ul>
+      <ul class="checklist">
+        <li>Reconhecer se uma função é TL (verificar T(0)=0)</li>
+        <li>Calcular equação característica det(A-λI)=0</li>
+        <li>Encontrar autovetores a partir do autovalor</li>
+        <li>Aplicar Teorema: dim(Ker)+dim(Im)=dim(U)</li>
+        <li>Distinguir espaço, subespaço, base e span</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Álgebra Linear — Guia Completo · UNIP 2º ano · 2026 · Boa prova! 🚀</div>
+
+<script>
+// ─── TABS ────────────────────────────────────────────────────────
+function switchTab(i){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i));
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+}
+
+// ─── SCORE ───────────────────────────────────────────────────────
+let ok=0, no=0, total=0;
+const MC_TOTAL = 8; // mc questions
+const VF_TOTAL = 5; // vf questions
+const GRAND = MC_TOTAL + VF_TOTAL;
+
+function updateScore(){
+  const ans = ok + no;
+  const pct = ans===0?0:Math.round(ok/ans*100);
+  document.getElementById('sc-ok').textContent=ok;
+  document.getElementById('sc-no').textContent=no;
+  document.getElementById('sc-pc').textContent=pct+'%';
+  document.getElementById('prog').style.width=(ans/GRAND*100)+'%';
+  document.getElementById('prog-txt').textContent=ans+' de '+GRAND+' questões respondidas';
+}
+
+// ─── MC ──────────────────────────────────────────────────────────
+document.querySelectorAll('.opts').forEach(group=>{
+  const correct=group.dataset.correct;
+  const expl=group.dataset.expl;
+  const verdict=group.parentElement.querySelector('.verdict');
+  group.querySelectorAll('.opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      if(group.classList.contains('done'))return;
+      group.classList.add('done');
+      const chosen=opt.dataset.val;
+      const isOk=chosen===correct;
+      if(isOk)ok++;else no++;
+      group.querySelectorAll('.opt').forEach(o=>{
+        o.classList.add('disabled');
+        if(o.dataset.val===correct)o.classList.add('correct');
+        else if(o.dataset.val===chosen&&!isOk)o.classList.add('wrong');
+      });
+      verdict.classList.add('show',isOk?'ok':'nok');
+      verdict.innerHTML=isOk
+        ?'✅ <strong>Correto!</strong> '+expl
+        :'❌ <strong>Incorreto.</strong> A resposta certa é <strong>'+correct.toUpperCase()+'</strong>. '+expl;
+      updateScore();
+    });
+  });
+});
+
+// ─── V/F ─────────────────────────────────────────────────────────
+function vfAnswer(btn, correctAns, expl){
+  const row=btn.parentElement;
+  if(row.classList.contains('done'))return;
+  row.classList.add('done');
+  const chosen=btn.classList.contains('vf-v')?'V':'F';
+  const isOk=chosen===correctAns;
+  if(isOk)ok++;else no++;
+  row.querySelectorAll('.vf-btn').forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(isOk?'selected-right':'selected-wrong');
+  const verdict=row.parentElement.querySelector('.verdict');
+  verdict.classList.add('show',isOk?'ok':'nok');
+  verdict.innerHTML=(isOk?'✅ <strong>Correto!</strong> ':'❌ <strong>Incorreto.</strong> ')+expl;
+  updateScore();
+}
+
+// ─── REVEAL ──────────────────────────────────────────────────────
+function revealToggle(btn,id){
+  const box=document.getElementById(id);
+  box.classList.toggle('show');
+  btn.textContent=box.classList.contains('show')?'🙈 Ocultar':'🔍 Ver resposta esperada';
+}
+</script>
+</body>
+</html>
